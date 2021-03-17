@@ -1,4 +1,4 @@
-# Express API Starter
+# PillPlus+ Backend
 
 Includes API Server utilities:
 
