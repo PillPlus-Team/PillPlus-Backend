@@ -1,8 +1,7 @@
 {
   "name": "expressjs_basic",
   "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
+  "private": true,
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
