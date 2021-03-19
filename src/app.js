@@ -17,6 +17,5 @@ app.use(cors());
 app.use('/api/v1',api);
 
 app.use(middleware.notFound);
-app.use(middleware.errorHandler);
 
 module.exports = app;

@@ -1,15 +1,31 @@
-const express = require('express');
+const express = require('express')
+const router = express.Router()
+const auth = require('./auth')
+const user = require('./user')
+const mongoose = require('mongoose')
+const expressJwt = require('express-jwt')
+const { notFound } = require('../common/middleware')
+const { errorRes } = require('../common/response')
 
-const Users = require('./Users');
 
-const router = express.Router();
+mongoose.connect(process.env.DB_URI, { 
+            useNewUrlParser: true,
+            autoIndex: false,
+            useFindAndModify: false,
+            useUnifiedTopology: true,
+})
+router.get('/ping', (req, res) => res.json('pong'))
+router.use('/auth', auth)
+router.use(expressJwt({ secret: process.env.JWT_SECRET, algorithms: ['HS512']  }),
+        (err, req, res, next) => {
+                if (err.name === 'UnauthorizedError') {
+                    console.error(req.user, req.ip, 'invalid token')
+                    return errorRes(res, err, 'Login to proceed', 401)
+                }
+        }
+)
 
-router.get('/', (req, res) => {
-    res.json({
-        message: 'API - 👋🌎🌎🌎'
-    });
-});
-
-router.use('/users', Users);
+router.use('/user', user)
+router.use(notFound)
 
 module.exports = router;

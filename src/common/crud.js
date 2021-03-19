@@ -15,7 +15,7 @@ function create (model, populate=[]){
 
 function read (model, populate=[]){
     return (req, res) => {
-        model.find(...req.body, errData(res).populate(...populate))
+        model.find(...req.body, errData(res)).populate(...populate)
     }
 }
 
