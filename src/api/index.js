@@ -7,13 +7,6 @@ const expressJwt = require('express-jwt')
 const { notFound } = require('../common/middleware')
 const { errorRes } = require('../common/response')
 
-
-mongoose.connect(process.env.DB_URI, { 
-            useNewUrlParser: true,
-            autoIndex: false,
-            useFindAndModify: false,
-            useUnifiedTopology: true,
-})
 router.get('/ping', (req, res) => res.json('pong'))
 router.use('/auth', auth)
 router.use(expressJwt({ secret: process.env.JWT_SECRET, algorithms: ['HS512']  }),

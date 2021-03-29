@@ -1,6 +1,5 @@
 const { errorRes } = require("./response");
 
-
 function notFound (req, res, _ ){
     return errorRes(res, 'no routes', 'you are lost.', 404)
 }
@@ -11,7 +10,7 @@ function onlyAdmin (req, res, next){
     return invalidToken(req, res)
 }
 
-function notOnlyMembers (req, res, next){
+function notOnlyMembers (req, res, next) {
     if (req.user.type === 'member')
         return invalidToken(req, res)
     return next();
