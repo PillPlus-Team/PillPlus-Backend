@@ -23,12 +23,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Poomipat-Ch/Learn-ExpressJs.git"
+    "url": "git+ssh://git@github.com/PillPlus/PillPlus-Backend.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Poomipat-Ch/Learn-ExpressJs/issues"
+    "url": "https://github.com/PillPlus/PillPlus-Backend/issues"
   },
-  "homepage": "https://github.com/Poomipat-Ch/Learn-ExpressJs#readme"
+  "homepage": "https://github.com/PillPlus/PillPlus-Backend#readme"
 }
