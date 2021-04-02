@@ -1,4 +1,4 @@
-const { errData, errorRes, successRes } = require("../common/response");
+const { errData, errorRes } = require("../common/response");
 const mongoose = require("mongoose");
 
 function create(model, populate = []) {

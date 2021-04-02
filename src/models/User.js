@@ -13,17 +13,25 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
       validate: [validator.isEmail, "invalid email"],
     },
+    phone: {
+      type: String,
+      required: true,
+      validate: [/[0-9]{10,10}/, "invalid phone number"],
+    },
+    birthday: { type: Date },
     type: {
       type: String,
       enum: ["admin", "staff", "pharmacy"],
       required: true,
     },
-    password: { type: String, required: true, select: false }
+    password: { type: String, required: true, select: false },
   },
   {
-      timestamps: true, versionKey: false
+    timestamps: true,
+    versionKey: false,
   }
 );
 

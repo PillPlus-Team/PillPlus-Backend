@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 
 require("dotenv").config();
-require('./db');
+require("./db");
 
 const middleware = require("./common/middleware");
 const api = require("./api");
