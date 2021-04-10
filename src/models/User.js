@@ -8,7 +8,6 @@ const userSchema = new Schema(
   {
     _id: ObjectId,
     name: { type: String, required: true },
-    surname: { type: String, required: true },
     email: {
       type: String,
       required: true,
@@ -21,7 +20,6 @@ const userSchema = new Schema(
       required: true,
       validate: [/[0-9]{10,10}/, "invalid phone number"],
     },
-    birthday: { type: Date },
     type: {
       type: String,
       enum: ["admin", "staff", "pharmacy"],
