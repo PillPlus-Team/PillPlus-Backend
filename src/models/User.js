@@ -21,7 +21,6 @@ const userSchema = new Schema(
       required: true,
       validate: [/[0-9]{10,10}/, "invalid phone number"],
     },
-    birthday: { type: Date },
     type: {
       type: String,
       enum: ["admin", "staff", "pharmacy"],
