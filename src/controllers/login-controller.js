@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User")
 const { errorRes, successRes, errData } = require("../common/response");
+const db = require("../models");
+const User = db.user;
 
 function findByEmail(req, res, next) {
     const { email, password } = req.body;
