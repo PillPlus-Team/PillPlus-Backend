@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { create, read, update, remove } = require("../common/crud");
-const User = require("../models/User");
+const User = require("../models").user;
 const { onlyAdmin, notFound } = require("../common/middleware");
 const bcrypt = require("bcrypt");
 const { errorRes } = require("../common/response");

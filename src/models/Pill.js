@@ -11,6 +11,7 @@ const pillSchema = new Schema(
     name: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
+    unit: { type: String, require: true },
     type: { type: String, enum: ["in", "out"], required: true },
   },
   {

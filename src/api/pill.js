@@ -2,7 +2,7 @@ const express = require("express");
 const { onlyAdmin } = require("../common/middleware");
 const { notFound } = require("../common/middleware");
 const { create, read, update, remove } = require("../common/crud");
-const Pill = require("../models/Pill");
+const Pill = require("../models").pill;
 const router = express.Router();
 
 router.post("/", onlyAdmin, create(Pill));

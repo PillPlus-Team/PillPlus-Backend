@@ -31,4 +31,4 @@ const PillStoreSchema = new Schema(
 );
 
 PillStoreSchema.plugin(uniqueValidator);
-module.exports = mogoose.model("PillStore", PillStoreSchema, "PillStores");
+module.exports = mongoose.model("PillStore", PillStoreSchema, "PillStores");

@@ -1,10 +1,10 @@
 const express = require("express");
-const { read, update, remove } = require("../common/crud");
+const { create, read, update, remove } = require("../common/crud");
 const { onlyAdmin, notFound } = require("../common/middleware");
-const PillStore = require("../models/PillStore");
+const PillStore = require("../models").pillStore;
 const router = express.Router();
 
-router.push("/", onlyAdmin, create(PillStore));
+router.post("/", onlyAdmin, create(PillStore));
 router.get("/all/:page", pillStoreAtPage, read(PillStore));
 router.put("/:id", onlyAdmin, update(PillStore));
 router.delete("/:id", onlyAdmin, remove(PillStore));
@@ -16,4 +16,4 @@ function pillStoreAtPage(req, res, next) {
   return next();
 }
 
-router.router.module.exports = router;
+module.exports = router;

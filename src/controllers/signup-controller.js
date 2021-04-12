@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
-const mongoose = require("mongoose");
-const User = require("../models/User");
 const { errorRes, successRes, errData } = require("../common/response");
+const db = require("../models");
+const mongoose = db.mongoose;
+const User = db.user;
 
 function hashPassword(req, res, next) {
   const { password } = req.body;
