@@ -14,7 +14,7 @@ const PillStoreSchema = new Schema(
     Phone: {
       type: String,
       required: true,
-      validate: [/[0-9]{10,10}/, "invalid phone number"],
+      validate: [/[0-9]{9,10}/, "invalid phone number"],
     },
     email: {
       type: String,

@@ -6,12 +6,13 @@ const Pill = require("../models").pill;
 const router = express.Router();
 
 router.post("/", onlyAdmin, create(Pill));
-router.get("/all/:page", pillAtPage, read(Pill));
+router.get("/all/:page" /*, pillAtPage*/, read(Pill)); // fetch All data
 router.put("/:_id", onlyAdmin, update(Pill));
 router.delete("/:_id", onlyAdmin, remove(Pill));
 
 router.use(notFound);
 
+// Use when fetch some data
 function pillAtPage(req, res, next) {
   req.body = [{}, null, { limit: 25, skip: (req.params.page - 1) * 25 }];
   return next();
