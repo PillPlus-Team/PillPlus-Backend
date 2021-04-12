@@ -9,4 +9,5 @@ mongoose.connect(process.env.DB_URI, {
     console.log('Database connected!');
 }).catch (err => {
     console.log('Cannot connect to database!', err);
+    process.exit();
 })
