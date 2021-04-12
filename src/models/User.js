@@ -23,7 +23,7 @@ const userSchema = new Schema(
     },
     type: {
       type: String,
-      enum: ["admin", "staff", "pharmacy"],
+      enum: ["superadmin", "admin", "cashier", "staff"],
       required: true,
     },
     password: { type: String, required: true, select: false },

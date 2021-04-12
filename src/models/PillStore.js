@@ -23,6 +23,7 @@ const PillStoreSchema = new Schema(
       lowercase: true,
       validate: [validator.isEmail, "invalid email"],
     },
+    password: { type: String, required: true, select: false },
   },
   {
     timestamps: true,
