@@ -6,7 +6,7 @@ const Pill = require("../models").pill;
 const router = express.Router();
 
 router.post("/", onlyAdmin, create(Pill));
-router.get("/all/:page" /*, pillAtPage*/, read(Pill)); // fetch All data
+router.get("/all" /*, pillAtPage*/, read(Pill)); // fetch All data
 router.put("/:_id", onlyAdmin, update(Pill));
 router.delete("/:_id", onlyAdmin, remove(Pill));
 
