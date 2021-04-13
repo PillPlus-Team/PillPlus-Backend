@@ -4,6 +4,7 @@ const auth = require("./auth");
 const user = require("./user");
 const pill = require("./pill");
 const pillStore = require("./pillStore");
+const picture = require("./picture");
 const expressJwt = require("express-jwt");
 const { notFound } = require("../common/middleware");
 const { errorRes } = require("../common/response");
@@ -23,6 +24,7 @@ router.use(
 router.use("/user", user);
 router.use("/pill", pill);
 router.use("/PillStore", pillStore);
+router.use("/picture", picture);
 router.use(notFound);
 
 module.exports = router;
