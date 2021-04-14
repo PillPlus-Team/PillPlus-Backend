@@ -4,7 +4,7 @@ const router = express.Router();
 const crypto = require("crypto");
 const mime = require("mime");
 const { errorRes, successRes } = require("../common/response");
-const User = require("../models/User");
+const User = require("../models").user;
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
