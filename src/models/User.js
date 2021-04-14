@@ -21,6 +21,7 @@ const userSchema = new Schema(
       required: true,
       validate: [/[0-9]{10,10}/, "invalid phone number"],
     },
+    avatar: { type: String, default: "avatar.jpg", required: true },
     type: {
       type: String,
       enum: ["superadmin", "admin", "cashier", "staff"],
