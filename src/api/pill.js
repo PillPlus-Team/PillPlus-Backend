@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/", onlyAdmin, create(Pill));
 router.get("/all" /*, pillAtPage*/, read(Pill)); // fetch All data
-router.put("/:_id", onlyAdmin, update(Pill));
+router.put("/:_id", update(Pill));
 router.delete("/:_id", onlyAdmin, remove(Pill));
 
 router.use(notFound);

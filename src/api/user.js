@@ -20,6 +20,14 @@ function userAtPage(req, res, next) {
   return next();
 }
 
+// function haveAvatar(req, res, next) {
+//   const { avatar } = req.body;
+//   if (!avatar) {
+//     req.body.avatar = "avatar.jpg";
+//   }
+//   next();
+// }
+
 function handlePassword(req, res, next) {
   const { password, ...body } = req.body;
   if (!password || password.length < 1) {

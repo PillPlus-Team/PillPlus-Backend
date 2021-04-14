@@ -1,15 +1,19 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
-const path = require("path");
+const crypto = require("crypto");
+const mime = require("mime");
 const { errorRes, successRes } = require("../common/response");
+const User = require("../models").user;
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "avatars/");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname);
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      cb(null, raw.toString("hex") + "." + mime.extension(file.mimetype));
+    });
   },
 });
 
@@ -19,12 +23,12 @@ const upload = multer({
 
 router.post("/avatar", upload.single("avatar"), (req, res, next) => {
   if (!req.file) return errorRes(res, "upload failed", 401);
-  return successRes(res, { url: req.file.path });
+  return successRes(res, { avatar: req.file.filename });
 });
 
 router.get("/avatar", (req, res) => {
-  const { filename } = req.body;
-  res.sendFile(filename, { root: "./avatars" });
+  const { avatar } = req.body;
+  res.sendFile(avatar, { root: "./avatars" });
 });
 
 module.exports = router;
