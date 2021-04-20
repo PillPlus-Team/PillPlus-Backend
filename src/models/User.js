@@ -19,14 +19,14 @@ const userSchema = new Schema(
     phone: {
       type: String,
       required: true,
-      validate: [/[0-9]{10,10}/, "invalid phone number"],
+      validate: [/[0-9]{9,10}/, "invalid phone number"],
     },
-    avatar: { type: String, default: "avatar.jpg", required: true },
-    type: {
+    role: {
       type: String,
       enum: ["superadmin", "admin", "cashier", "staff"],
       required: true,
     },
+    avatarUrl: { type: String, default: "avatar.jpg", required: true },
     password: { type: String, required: true, select: false },
   },
   {
