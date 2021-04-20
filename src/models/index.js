@@ -5,9 +5,9 @@ const db = {};
 
 db.mongoose = mongoose;
 
+db.user = require("./User");
 db.pill = require("./Pill");
 db.pillStore = require("./PillStore");
-//db.pillStorehouse = require("./pillStoreHouse");
-db.user = require("./User");
+db.pillStorehouse = require("./pillStorehouse");
 
 module.exports = db;

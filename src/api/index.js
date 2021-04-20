@@ -11,15 +11,15 @@ const { errorRes } = require("../common/response");
 
 router.get("/ping", (req, res) => res.json("pong"));
 router.use("/auth", auth);
-router.use(
-  expressJwt({ secret: process.env.JWT_SECRET, algorithms: ["HS512"] }),
-  (err, req, res, next) => {
-    if (err.name === "UnauthorizedError") {
-      console.error(req.user, req.ip, "invalid token");
-      return errorRes(res, err, "Login to proceed", 401);
-    }
-  }
-);
+// router.use(
+//   expressJwt({ secret: process.env.JWT_SECRET, algorithms: ["HS512"] }),
+//   (err, req, res, next) => {
+//     if (err.name === "UnauthorizedError") {
+//       console.error(req.user, req.ip, "invalid token");
+//       return errorRes(res, err, "Login to proceed", 401);
+//     }
+//   }
+// );
 
 router.use("/user", user);
 router.use("/pill", pill);
