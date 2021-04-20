@@ -4,10 +4,12 @@ const { onlyAdmin, notFound } = require("../common/middleware");
 const PillStore = require("../models").pillStore;
 const router = express.Router();
 
-router.post("/", onlyAdmin, create(PillStore));
+const controller = require('../controllers/PillStore.controller');
+
+router.post("/", /*onlyAdmin,*/ controller.addPillStore);
 router.get("/all" /*, pillStoreAtPage*/, read(PillStore)); // fetch All data
-router.put("/:id", onlyAdmin, update(PillStore));
-router.delete("/:id", onlyAdmin, remove(PillStore));
+router.put("/:_id", onlyAdmin, update(PillStore));
+router.delete("/:_id", /*onlyAdmin,*/ controller.deletePillStore);
 
 router.use(notFound);
 

@@ -71,6 +71,3 @@ typings/
 
 # Serverless directories
 .serverless
-
-/src/models/PillStorehouse.js
-/src/api/PillStorehouse.js

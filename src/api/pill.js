@@ -5,10 +5,12 @@ const { create, read, update, remove } = require("../common/crud");
 const Pill = require("../models").pill;
 const router = express.Router();
 
-router.post("/", onlyAdmin, create(Pill));
+const controller = require('../controllers/Pill.controller');
+
+router.post("/", onlyAdmin, controller.addPill);
 router.get("/all" /*, pillAtPage*/, read(Pill)); // fetch All data
 router.put("/:_id", update(Pill));
-router.delete("/:_id", onlyAdmin, remove(Pill));
+router.delete("/:_id", onlyAdmin, controller.deletePill);
 
 router.use(notFound);
 
