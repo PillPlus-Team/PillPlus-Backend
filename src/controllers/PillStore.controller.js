@@ -36,8 +36,6 @@ exports.addPillStore = async (req, res) => {
                 pill_list: pills
             })
 
-            console.log(user);
-
             pillStorehouse.save((err, account) => {
                 if (err)
                     return res.status(500).send({ message: err });
