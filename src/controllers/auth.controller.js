@@ -68,8 +68,9 @@ exports.signUp = (req, res) => {
     });
     return newUser.save((err, data) => {
       if (err) return errorRes(res, err, "unable to create user");
-      const { _id, name, email, type } = data;
-      return successRes(res, { _id, name, email, type });
+      console.log(data);
+      const { _id, name, email, role } = data;
+      return successRes(res, { _id, name, email, role });
     });
 }
 

@@ -4,15 +4,12 @@ const {
   findByEmail,
   verifyPassword,
   login,
-  hashPassword, 
-  signUp,
   isValidPassword,
 } = require("../controllers/auth.controller");
 
 const router = express.Router();
 
 router.use(isValidPassword);
-router.post("/signup", hashPassword, signUp);
 router.post("/login", findByEmail, verifyPassword, login);
 router.use(notFound);
 
