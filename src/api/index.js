@@ -19,22 +19,22 @@ router.use(
       if (
         req.headers.authorization &&
         req.headers.authorization.split(" ")[0] === "Bearer"
-        ) {
-          return req.headers.authorization.split(" ")[1];
-        } else if (req.cookies.cookieToken) {
-          return req.cookies.cookieToken;
-        }
-        return null;
-      },
-    }),
-    (err, req, res, next) => {
-      if (err.name === "UnauthorizedError") {
-        console.error(req.user, req.ip, "invalid token");
-        return errorRes(res, err, "Login to proceed", 401);
+      ) {
+        return req.headers.authorization.split(" ")[1];
+      } else if (req.cookies.cookieToken) {
+        return req.cookies.cookieToken;
       }
-      next();
+      return null;
+    },
+  }),
+  (err, req, res, next) => {
+    if (err.name === "UnauthorizedError") {
+      console.error(req.user, req.ip, "invalid token");
+      return errorRes(res, err, "Login to proceed", 401);
     }
-    );
+    next();
+  }
+);
     
 router.use("/admin", admin);
 router.use("/auth", auth);
