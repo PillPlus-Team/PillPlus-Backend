@@ -4,9 +4,10 @@ const {
   findByEmail,
   verifyPassword,
   login,
-} = require("../controllers/login-controller");
-const { hashPassword, signUp } = require("../controllers/signup-controller");
-const { isValidPassword } = require("../controllers/valid-password-controller");
+  hashPassword, 
+  signUp,
+  isValidPassword,
+} = require("../controllers/auth.controller");
 
 const router = express.Router();
 

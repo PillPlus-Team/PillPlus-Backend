@@ -5,12 +5,12 @@ function notFound(req, res, _) {
 }
 
 function onlyAdmin(req, res, next) {
-  if (req.user.type === "admin") return next();
+  if (req.user.roles === "admin") return next();
   return invalidToken(req, res);
 }
 
 function notOnlyMembers(req, res, next) {
-  if (req.user.type === "member") return invalidToken(req, res);
+  if (req.user.roles === "member") return invalidToken(req, res);
   return next();
 }
 
