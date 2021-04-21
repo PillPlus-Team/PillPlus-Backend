@@ -4,6 +4,8 @@ const {
   findByEmail,
   verifyPassword,
   login,
+  hashPassword,
+  signUp,
   isValidPassword,
 } = require("../controllers/auth.controller");
 
