@@ -27,21 +27,27 @@ exports.verifyPassword = (req, res, next) => {
 }
 
 exports.login = async (req, res) => {
-  var user = req.body;
-  var token = await jwt.sign(req.body, process.env.JWT_SECRET, {
-    algorithm: "HS512",
-    expiresIn: "1d",
-  });
+  var { _id, name, surname, email, phone, role, avatarUrl } = req.body;
+  var token = await jwt.sign(
+    { name, surname, email, phone, role },
+    process.env.JWT_SECRET,
+    {
+      algorithm: "HS512",
+      expiresIn: "1d",
+    }
+  );
+
+  res.cookie("cookieToken", token, { httpOnly: true }); // add secure: true for production
 
   res.status(200).send({
-    id: user._id,
-    name: user.name,
-    surname: user.surname,
-    email: user.email,
-    phone: user.phone,
-    roles: user.role,
-    avatarUrl: user.avatarUrl,
-    accessToken: token,
+    id: _id,
+    name: name,
+    surname: surname,
+    email: email,
+    phone: phone,
+    role: role,
+    avatarUrl: avatarUrl,
+    // accessToken: token, // use cookie instead
   });
 }
 
