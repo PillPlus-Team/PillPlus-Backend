@@ -16,7 +16,7 @@ router.use(
     secret: process.env.JWT_SECRET,
     algorithms: ["HS512"],
     credentialsRequired: false,
-    getToken: function fromHeaderOrQuerystring(req) {
+    getToken: function fromHeader(req) {
       if (
         req.headers.authorization &&
         req.headers.authorization.split(" ")[0] === "Bearer"
