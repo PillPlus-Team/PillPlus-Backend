@@ -1,16 +1,15 @@
 const express = require("express");
 const router = express.Router();
+
 const auth = require("./auth");
-const user = require("./user");
-const pill = require("./pill");
-const pillStore = require("./pillStore");
+const admin = require("./admin");
 const picture = require("./picture");
+
 const expressJwt = require("express-jwt");
 const { notFound } = require("../common/middleware");
 const { errorRes } = require("../common/response");
 
 router.get("/ping", (req, res) => res.json("pong"));
-router.use("/auth", auth);
 router.use(
   expressJwt({
     secret: process.env.JWT_SECRET,
@@ -36,10 +35,9 @@ router.use(
     next();
   }
 );
-
-router.use("/user", user);
-router.use("/pill", pill);
-router.use("/PillStore", pillStore);
+    
+router.use("/admin", admin);
+router.use("/auth", auth);
 router.use("/picture", picture);
 router.use(notFound);
 
