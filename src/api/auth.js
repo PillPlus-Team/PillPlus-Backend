@@ -1,5 +1,5 @@
 const express = require("express");
-const { notFound } = require("../common/middleware");
+const { notFound, verifyToken } = require("../common/middleware");
 const {
   findByEmail,
   verifyPassword,
@@ -14,14 +14,15 @@ const {
 
 const router = express.Router();
 
-router.post("/updateProfile", updateProfile);
+router.put("/updateProfile", verifyToken, updateProfile);
 
 router.use(isValidPassword);
 router.post("/signup", hashPassword, signUp);
 router.post("/login", findByEmail, verifyPassword, login);
 
+router.use(verifyToken);
 router.use(isValidNewPassword);
-router.post("/resetPassword", resetPassword);
+router.put("/resetPassword", resetPassword);
 router.use(notFound);
 
 module.exports = router;
