@@ -1,18 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const { create, read, update, remove } = require("../common/crud");
-const User = require("../models").user;
-const { onlyAdmin, notFound } = require("../common/middleware");
-const bcrypt = require("bcrypt");
+
+const { 
+  create, 
+  read, 
+  update, 
+  remove 
+} = require("../common/crud");
 const { errorRes } = require("../common/response");
 
-router.use(onlyAdmin);
+const User = require("../models").user;
+const bcrypt = require("bcrypt");
+
 router.post("/", create(User));
-router.get("/all" /*, userAtPage*/, read(User)); // fetch All data
+router.get("/all", read(User)); // fetch All data
 router.put("/:_id", handlePassword, update(User));
 router.delete("/:_id", remove(User));
-
-router.use(notFound);
 
 // Use when fetch some data
 function userAtPage(req, res, next) {

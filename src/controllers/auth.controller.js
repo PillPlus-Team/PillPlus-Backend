@@ -29,7 +29,7 @@ exports.verifyPassword = (req, res, next) => {
 exports.login = async (req, res) => {
   var { _id, name, surname, email, phone, role, avatarUrl } = req.body;
   var token = await jwt.sign(
-    { name, surname, email, phone, role },
+    { _id, role },
     process.env.JWT_SECRET,
     {
       algorithm: "HS512",
@@ -76,7 +76,7 @@ exports.signUp = (req, res) => {
 
 // Valid password
 exports.isValidPassword = (req, res, next) => {
-    const { password } = req.body;
+    const { password,  } = req.body;
     if (!password || password.length < 6) {
       const err = `invalid password ${password}`;
       const errMsg = "password must be at least 6 characters";
@@ -86,6 +86,91 @@ exports.isValidPassword = (req, res, next) => {
 }
 
 // Update Profile
-exports.updateProfile = (req, res) => {
+exports.updateProfile = async (req, res) => {
+  const { name, surname, email, phone, avatarUri } = req.body;
 
+  await User.findOne({
+      email: req.body.email
+  }, async (err, user) => {
+    if (err) {
+      return res.status(500).send({ message: err });
+    }
+
+    if (!user || user._id == req.user._id) {
+
+      await User.findOneAndUpdate(
+        req.user._id,
+        req.body,
+        async (err, user) => {
+          if (err) 
+            return res.status(500).send({ message: err });
+    
+            res.status(200).send({
+              name,
+              surname,
+              email,
+              phone,
+              avatarUri,
+              // accessToken: token, // use cookie instead
+            });
+        }
+      )
+
+    } else {
+      return res.status(400).send({ message: "Failed! Email is already in use!"})
+    }
+  })
+}
+
+// Reset password
+exports.resetPassword = async (req, res) => {
+    const { password, newPassword, reNewPassword } = req.body;
+
+    User.findOne({
+        _id: req.user._id
+    },  "+password",
+        async (err, user) => {
+            if (err) {
+                return res.status(500).send({ message: err });
+            }
+            
+            await bcrypt.compare(password, user.password, (err, same) => {
+                if (!same) {
+                    return errorRes(res, err, "password error, try again");
+                }
+
+                if (newPassword !== reNewPassword) {
+                    return res.status(400).send({ message: "Failed! New password and Confirm password doesn't match!"})
+                }
+
+                bcrypt.hash(newPassword, 10, async (err, hashed) => {
+                    if (err) 
+                        return errorRes(res, err, "unable to sign up, try again");
+
+                    await User.findOneAndUpdate(
+                        req.user._id, {
+                        password: hashed
+                      },
+                        async (err, user) => {
+                            if (err) 
+                                return res.status(500).send({ message: err });
+                        
+                            return res.status(200).send({ message: "Reset password successful!" });
+                        }
+                    );
+                }); 
+            });
+        }
+    )
+}
+
+exports.isValidNewPassword = (req, res, next) => {
+  const { newPassword } = req.body;
+  if (!newPassword || newPassword.length < 6) {
+    const err = `invalid password ${newPassword}`;
+    const errMsg = "password must be at least 6 characters";
+    return errorRes(res, err, errMsg);
+  }
+
+  return next();
 }
