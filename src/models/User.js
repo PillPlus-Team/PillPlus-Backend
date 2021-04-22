@@ -23,7 +23,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["superadmin", "admin", "cashier", "staff"],
+      enum: ["Super Administrator", "Administrator", "Cashier", "Staff"],
       required: true,
     },
     avatarUrl: { type: String, default: "avatar.jpg", required: true },
