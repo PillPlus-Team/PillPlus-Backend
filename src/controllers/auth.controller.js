@@ -133,7 +133,7 @@ exports.resetPassword = async (req, res) => {
             if (err) {
                 return res.status(500).send({ message: err });
             }
-            
+
             await bcrypt.compare(password, user.password, (err, same) => {
                 if (!same) {
                     return errorRes(res, err, "password error, try again");
@@ -173,4 +173,9 @@ exports.isValidNewPassword = (req, res, next) => {
   }
 
   return next();
+}
+
+// Log out
+exports.logOut = (req, res) => {
+  
 }

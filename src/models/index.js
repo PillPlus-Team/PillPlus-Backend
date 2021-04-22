@@ -8,6 +8,6 @@ db.mongoose = mongoose;
 db.user = require("./User");
 db.pill = require("./Pill");
 db.pillStore = require("./PillStore");
-db.pillStorehouse = require("./pillStorehouse");
+db.pillStorehouse = require("./PillStorehouse");
 
 module.exports = db;
