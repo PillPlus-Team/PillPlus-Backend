@@ -5,7 +5,7 @@ function notFound(req, res, _) {
 }
 
 function onlyAdmin(req, res, next) {
-  if (req.user.role === "admin" || req.user.role === "superadmin")
+  if (req.user.role === "Administrator" || req.user.role === "Super Administrator")
     return next();
   return invalidToken(req, res);
 }
