@@ -5,8 +5,9 @@ const pill = require("./pill");
 const account = require("./account");
 const pillStore = require("./pillStore");
 
-const { onlyAdmin } = require("../common/middleware");
+const { onlyAdmin, verifyToken } = require("../common/middleware");
 
+router.use(verifyToken);
 router.use(onlyAdmin);
 router.use("/pill", pill);
 router.use("/account", account);

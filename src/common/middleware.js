@@ -22,8 +22,15 @@ function invalidToken(req, res) {
   return errorRes(res, err, errMsg, 401);
 }
 
+function verifyToken(req, res, next) {
+  if (!req.user)
+    return invalidToken(req, res);
+  return next();
+}
+
 module.exports = {
   notFound,
   onlyAdmin,
   notOnlyMembers,
+  verifyToken,
 };
