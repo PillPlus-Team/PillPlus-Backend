@@ -28,7 +28,7 @@ router.post("/",
             handlePassword,
             addAccount
           );
-router.put("/:_id", handlePassword, updateAccount);
+router.put("/:_id", updateAccount);
 router.delete("/:_id", deleteAccount);
 
 // Use when fetch some data

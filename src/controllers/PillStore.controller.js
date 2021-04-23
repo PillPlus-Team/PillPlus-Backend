@@ -119,37 +119,46 @@ exports.updatePillStore = async (req, res) => {
     await PillStore.findOne({
         email: req.body.email
     }, async (err, pillStore) => {
-      if (err) {
-        return res.status(500).send({ message: err });
-      }
-  
-      console.log(req.params)
-      if (!pillStore || pillStore._id == req.params._id) {
-  
-        await PillStore.findOneAndUpdate({
-            _id: req.params._id
-        },
-          req.body,
-          async (err, pillStore) => {
-            if (err) 
-              return res.status(500).send({ message: err });
-      
-              res.status(200).send({
-                _id: req.params._id,
-                ID: pillStore.ID,
-                name,
-                pharmacy,
-                location,
-                email,
-                phone,
-                // accessToken: token, // use cookie instead
-              });
-          }
-        )
-  
-      } else {
-        return res.status(400).send({ message: "Failed! Email is already in use!"})
-      }
+        if (err) {
+            return res.status(500).send({ message: err });
+        }
+
+        if (!pillStore || pillStore._id == req.params._id) {
+
+            await PillStore.fineOne({
+                phone: req.body.phone
+            }, async (err, pillStore) => {
+
+                if(!pillStore || pillStore._id == req.params._id) {
+
+                    await PillStore.findOneAndUpdate({
+                        _id: req.params._id
+                        },
+                        req.body,
+                        async (err, pillStore) => {
+                            if (err) 
+                                return res.status(500).send({ message: err });
+                    
+                            res.status(200).send({
+                                _id: req.params._id,
+                                ID: pillStore.ID,
+                                name,
+                                pharmacy,
+                                location,
+                                email,
+                                phone,
+                                // accessToken: token, // use cookie instead
+                            });
+                        }
+                    );
+
+                }
+
+            })
+    
+        } else {
+            return res.status(400).send({ message: "Failed! Email is already in use!"})
+        }
     })
 }
 

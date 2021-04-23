@@ -1,14 +1,17 @@
 const express = require("express");
 const router = express.Router();
 
-const { read, update } = require("../common/crud");
+const { update } = require("../common/crud");
+const { onlyAdmin } = require("../common/middleware");
 
 const Pill = require("../models").pill;
 const controller = require('../controllers/Pill.controller');
 
+router.get("/all", controller.getAllPills); // fetch All data
+
+router.use(onlyAdmin);
 router.post("/", controller.addPill);
-router.get("/all", read(Pill)); // fetch All data
-router.put("/:_id", update(Pill));
+router.put("/:_id", controller.updatePill);
 router.delete("/:_id", controller.deletePill);
 
 // Use when fetch some data
