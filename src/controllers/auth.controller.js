@@ -37,7 +37,7 @@ exports.login = async (req, res) => {
     }
   );
 
-  res.cookie("cookieToken", token, { httpOnly: true, secure: true, sameSite: "None", maxAge: 30*60*1000 }); // add secure: true for production
+  res.cookie("cookieToken", token, { httpOnly: true, secure: true, sameSite: "None", maxAge: 12*60*60*1000 }); // add secure: true for production
 
   res.status(200).send({
     id: _id,
