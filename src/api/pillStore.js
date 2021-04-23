@@ -1,14 +1,27 @@
 const express = require("express");
 const router = express.Router();
 
-const { read, update } = require("../common/crud");
+const { 
+  onlyAdmin, 
+  handlePassword, 
+  checkDuplicateEmailOrPhone 
+} = require("../common/middleware");
 
 const PillStore = require("../models").pillStore;
 const controller = require('../controllers/PillStore.controller');
 
-router.post("/", controller.addPillStore);
-router.get("/all", read(PillStore)); // fetch All data
-router.put("/:_id", update(PillStore));
+// ---------------------------- API ---------------------------- //
+
+router.get("/all", controller.getAllPillStores); // fetch All data
+
+router.use(onlyAdmin);
+router.post("/", 
+            controller.checkDuplicateEmailOrPhone, 
+            handlePassword,
+            controller.CreateID,
+            controller.addPillStore
+          );
+router.put("/:_id", controller.updatePillStore);
 router.delete("/:_id", controller.deletePillStore);
 
 // Use when fetch some data

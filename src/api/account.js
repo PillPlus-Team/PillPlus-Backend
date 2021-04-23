@@ -2,20 +2,34 @@ const express = require("express");
 const router = express.Router();
 
 const { 
-  create, 
-  read, 
-  update, 
-  remove 
-} = require("../common/crud");
-const { errorRes } = require("../common/response");
+    onlyAdmin, 
+    handlePassword, 
+    checkDuplicateEmailOrPhone 
+} = require("../common/middleware");
+
+const {
+    hashPassword,
+    addAccount,
+    getAllAccounts,
+    updateAccount,
+    deleteAccount,
+} = require("../controllers/Account.controller");
 
 const User = require("../models").user;
-const bcrypt = require("bcrypt");
 
-router.post("/", create(User));
-router.get("/all", read(User)); // fetch All data
-router.put("/:_id", handlePassword, update(User));
-router.delete("/:_id", remove(User));
+
+// ---------------------------- API ---------------------------- //
+
+router.get("/all", getAllAccounts); // fetch All data
+
+router.use(onlyAdmin);
+router.post("/", 
+            checkDuplicateEmailOrPhone, 
+            handlePassword,
+            addAccount
+          );
+router.put("/:_id", handlePassword, updateAccount);
+router.delete("/:_id", deleteAccount);
 
 // Use when fetch some data
 function userAtPage(req, res, next) {
@@ -30,26 +44,5 @@ function userAtPage(req, res, next) {
 //   }
 //   next();
 // }
-
-function handlePassword(req, res, next) {
-  const { password, ...body } = req.body;
-  if (!password || password.length < 1) {
-    req.body = body;
-    return next();
-  }
-  if (password.length < 6)
-    return errorRes(
-      res,
-      "invalid password",
-      "password must be at least 6 characters"
-    );
-
-  bcrypt.hash(password, 10, (err, hash) => {
-    if (err) return errorRes(res, err, "password error");
-    const data = { ...body, password: hash };
-    req.body = data;
-    return next();
-  });
-}
 
 module.exports = router;

@@ -8,10 +8,11 @@ const ObjectId = Schema.ObjectId;
 const PillStoreSchema = new Schema(
   {
     _id: ObjectId,
+    ID: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     pharmacy: { type: String, required: true },
     location: { type: String, required: true },
-    Phone: {
+    phone: {
       type: String,
       required: true,
       validate: [/[0-9]{9,10}/, "invalid phone number"],

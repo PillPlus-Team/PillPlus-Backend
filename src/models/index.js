@@ -5,6 +5,7 @@ const db = {};
 
 db.mongoose = mongoose;
 
+db.id = require("./ID.model");
 db.user = require("./User");
 db.pill = require("./Pill");
 db.pillStore = require("./PillStore");

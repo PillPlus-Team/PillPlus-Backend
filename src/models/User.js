@@ -26,7 +26,7 @@ const userSchema = new Schema(
       enum: ["Super Administrator", "Administrator", "Cashier", "Staff"],
       required: true,
     },
-    avatarUrl: { type: String, default: "avatar.jpg", required: true },
+    avatarUri: { type: String, default: "avatar.jpg", required: true },
     password: { type: String, required: true, select: false },
   },
   {
