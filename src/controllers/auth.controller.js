@@ -181,5 +181,6 @@ exports.isValidNewPassword = (req, res, next) => {
 
 // Log out
 exports.logOut = (req, res) => {
-
+   res.cookie("cookieToken",'', { httpOnly: true, secure: true, sameSite: "None" , maxAge: -1 });
+   res.end();
 }
