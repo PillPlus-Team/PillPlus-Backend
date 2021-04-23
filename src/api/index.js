@@ -2,11 +2,13 @@ const express = require("express");
 const router = express.Router();
 
 const auth = require("./auth");
-const admin = require("./admin");
+const pill = require("./pill");
+const account = require("./account");
+const pillStore = require("./pillStore");
 const picture = require("./picture");
 
 const expressJwt = require("express-jwt");
-const { notFound } = require("../common/middleware");
+const { notFound, verifyToken } = require("../common/middleware");
 const { errorRes } = require("../common/response");
 
 router.get("/ping", (req, res) => res.json("pong"));
@@ -45,7 +47,11 @@ router.use(
 );
     
 router.use("/auth", auth);
-router.use("/admin", admin);
+
+router.use(verifyToken);
+router.use("/pill", pill);
+router.use("/account", account);
+router.use("/pillStore", pillStore);
 router.use("/picture", picture);
 router.use(notFound);
 
