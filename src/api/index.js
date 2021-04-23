@@ -13,13 +13,6 @@ const { errorRes } = require("../common/response");
 
 router.get("/ping", (req, res) => res.json("pong"));
 
-router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Methods','POST, GET, PUT, PATCH, DELETE, OPTIONS')
-  res.header('Access-Control-Allow-Headers','Content-Type, Option, Authorization')
-  return next()
-})
-
 router.use(
   expressJwt({
     secret: process.env.JWT_SECRET,
