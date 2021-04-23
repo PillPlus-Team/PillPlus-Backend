@@ -19,8 +19,13 @@ app.use(
   })
 );
 
+const corsOptions = {
+  origin: process.env.ORIGIN_CORS,
+  credentials: true
+}
+
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
