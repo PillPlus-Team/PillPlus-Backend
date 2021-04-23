@@ -1,10 +1,10 @@
 const express = require("express");
-const { notFound, handlePassword, verifyToken } = require("../common/middleware");
+const { notFound, verifyToken } = require("../common/middleware");
 const {
   findByEmail,
   verifyPassword,
   login,
-  isValidNewPassword,
+  handleNewPassword,
   updateProfile,
   resetPassword,
   logout
@@ -15,8 +15,8 @@ const router = express.Router();
 // ---------------------------- API ---------------------------- //
 
 router.put("/updateProfile", verifyToken, updateProfile);
-router.post("/login", handlePassword, findByEmail, verifyPassword, login);
-router.put("/resetPassword", verifyToken, isValidNewPassword, resetPassword);
+router.post("/login", findByEmail, verifyPassword, login);
+router.put("/resetPassword", verifyToken, handleNewPassword, resetPassword);
 router.get("/logout", logout);
 router.use(notFound);
 

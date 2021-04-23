@@ -2,6 +2,7 @@ const db = require('../models');
 const Pill = db.pill;
 const PillStorehouse = db.pillStorehouse;
 
+// Add pill
 exports.addPill = (req, res) => {
     const pill = new Pill({
         _id: new db.mongoose.Types.ObjectId(),
@@ -36,6 +37,44 @@ exports.addPill = (req, res) => {
     });
 }
 
+// Get all pills
+exports.getAllPills = async (req, res) => {
+    Pill.find({}, "-createdAt -updatedAt", (err, pillStore) => {
+        if (err) {
+            return res.status(500).send({ message: "Cannot get all accounts!!" });
+        }
+        return res.status(200).send(pillStore);
+    })
+}
+
+// Update pill store
+exports.updatePill = async (req, res) => {
+
+    await Pill.findOne({
+        sn: req.body.sn
+    }, async (err, pill) => {
+
+        if (!pill || pill._id == req.params._id) {
+
+            await Pill.fineByIdAndUpdate({
+                _id: req.params._id
+            }, req.body, async (err, pill) => {
+
+                if (err) 
+                    return res.status(500).send({ message: err });
+                
+                return res.status(200).send(pill);
+
+            })
+
+        } else {
+            return res.status(400).send({ message: "Failed! SN is already in use!"})
+        }
+    })
+  
+}
+
+// Delete pill
 exports.deletePill = (req, res) => {
     Pill.deleteOne({
         _id: req.params._id

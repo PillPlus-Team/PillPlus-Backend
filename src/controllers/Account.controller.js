@@ -42,7 +42,7 @@ exports.getAllAccounts = async (req, res) => {
 
 // Update Profile
 exports.updateAccount = async (req, res) => {
-    const { name, surname, email, phone } = req.body;
+    const { name, surname, email, phone, role } = req.body;
   
     await User.findOne({
         email: req.body.email
@@ -51,30 +51,42 @@ exports.updateAccount = async (req, res) => {
         return res.status(500).send({ message: err });
       }
 
-    
       if (!user || user._id == req.params._id) {
-  
-        await User.findOneAndUpdate({
-          _id: req.params._id
-        },
-          req.body,
-          async (err, user) => {
-            if (err) 
-              return res.status(500).send({ message: err });
-      
-              res.status(200).send({
-                _id: req.params._id,
-                name,
-                surname,
-                email,
-                phone,
-                // accessToken: token, // use cookie instead
-              });
+
+        await User.fineOne({
+          phone: req.body.phone
+        }, async (err, user) => {
+          if (err) {
+            return res.status(500).send({ message: err });;
           }
-        )
+  
+          if(!user || user._id == req.params._id) {
+
+            await User.findOneAndUpdate({
+                _id: req.params._id
+                },
+                req.body,
+                async (err, user) => {
+                    if (err) 
+                    return res.status(500).send({ message: err });
+            
+                    res.status(200).send({
+                        _id: req.params._id,
+                        name,
+                        surname,
+                        email,
+                        phone,
+                        // accessToken: token, // use cookie instead
+                    });
+                }
+            )
+          } else {
+            return res.status(400).send({ message: "Failed! Phone number is already in use!"});
+          }
+        })
   
       } else {
-        return res.status(400).send({ message: "Failed! Email is already in use!"})
+        return res.status(400).send({ message: "Failed! Email is already in use!"});
       }
     })
 }

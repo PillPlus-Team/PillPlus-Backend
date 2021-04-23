@@ -133,7 +133,7 @@ exports.resetPassword = async (req, res) => {
     )
 }
 
-exports.isValidNewPassword = (req, res, next) => {
+exports.handleNewPassword = (req, res, next) => {
   const { newPassword } = req.body;
   if (!newPassword || newPassword.length < 6) {
     const err = `invalid password ${newPassword}`;
