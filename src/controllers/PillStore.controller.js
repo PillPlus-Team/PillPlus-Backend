@@ -5,7 +5,7 @@ const PillStore = db.pillStore;
 const PillStorehouse = db.pillStorehouse;
 
 // Add pill store
-exports.CreateID = async (req, res, next) => {
+exports.CreateID = (req, res, next) => {
     ID.findOne({}, (err, id) => {
         if(!id) {
             const newID = new ID({ count: 1 });
@@ -54,7 +54,7 @@ exports.addPillStore = async (req, res) => {
                 pill_list: pills
             })
 
-            pillStorehouse.save(async (err, account) => {
+            pillStorehouse.save((err, account) => {
                 if (err)
                     return res.status(500).send({ message: "Cannot create pill storehouse!" });
 
@@ -103,7 +103,7 @@ exports.checkDuplicateEmailOrPhone = (req, res, next) => {
   };
 
 // Get all pill stores
-exports.getAllPillStores = async (req, res) => {
+exports.getAllPillStores = (req, res) => {
     PillStore.find({}, "-createdAt -updatedAt", (err, pillStore) => {
         if (err) {
             return res.status(500).send({ message: "Cannot get all accounts!!" });
@@ -113,29 +113,31 @@ exports.getAllPillStores = async (req, res) => {
 }
 
 // Update pill store
-exports.updatePillStore = async (req, res) => {
+exports.updatePillStore = (req, res) => {
     const { name, pharmacy, location, email, phone } = req.body;
   
-    await PillStore.findOne({
+    PillStore.findOne({
         email: req.body.email
-    }, async (err, pillStore) => {
+    }).exec((err, pillStore) => {
         if (err) {
             return res.status(500).send({ message: err });
         }
 
         if (!pillStore || pillStore._id == req.params._id) {
 
-            await PillStore.fineOne({
+            PillStore.findOne({
                 phone: req.body.phone
-            }, async (err, pillStore) => {
+            }).exec((err, pillStore) => {
+                if (err) {
+                    return res.status(500).send({ message: err });
+                }
 
                 if(!pillStore || pillStore._id == req.params._id) {
 
-                    await PillStore.findOneAndUpdate({
+                    PillStore.findOneAndUpdate({
                         _id: req.params._id
-                        },
-                        req.body,
-                        async (err, pillStore) => {
+                        }, req.body)
+                        .exec((err, pillStore) => {
                             if (err) 
                                 return res.status(500).send({ message: err });
                     
@@ -163,7 +165,7 @@ exports.updatePillStore = async (req, res) => {
 }
 
 // Delete pill store
-exports.deletePillStore = async (req, res) => {
+exports.deletePillStore = (req, res) => {
     PillStore.deleteOne({
         _id: req.params._id
     }, (err, pill) => {

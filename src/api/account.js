@@ -8,7 +8,6 @@ const {
 } = require("../common/middleware");
 
 const {
-    hashPassword,
     addAccount,
     getAllAccounts,
     updateAccount,
