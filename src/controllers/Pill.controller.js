@@ -38,7 +38,7 @@ exports.addPill = (req, res) => {
 }
 
 // Get all pills
-exports.getAllPills = async (req, res) => {
+exports.getAllPills = (req, res) => {
     Pill.find({}, "-createdAt -updatedAt", (err, pillStore) => {
         if (err) {
             return res.status(500).send({ message: "Cannot get all accounts!!" });
@@ -48,25 +48,20 @@ exports.getAllPills = async (req, res) => {
 }
 
 // Update pill store
-exports.updatePill = async (req, res) => {
+exports.updatePill = (req, res) => {
 
-    await Pill.findOne({
+    Pill.findOne({
         sn: req.body.sn
-    }, async (err, pill) => {
-
+    }).exec((err, pill) => {
         if (!pill || pill._id == req.params._id) {
-
-            await Pill.fineByIdAndUpdate({
+            Pill.findOneAndUpdate({
                 _id: req.params._id
-            }, req.body, async (err, pill) => {
-
-                if (err) 
-                    return res.status(500).send({ message: err });
-                
-                return res.status(200).send(pill);
-
+                }, req.body)
+                .exec((err, pill) => {
+                    if (err) 
+                        return res.status(500).send({ message: err });
+                    return res.status(200).send(pill);
             })
-
         } else {
             return res.status(400).send({ message: "Failed! SN is already in use!"})
         }

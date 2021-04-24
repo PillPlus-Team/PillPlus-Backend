@@ -6,6 +6,7 @@ const path = require("path");
 
 require("dotenv").config();
 require("./db");
+require("./realtime");
 
 const middleware = require("./common/middleware");
 const api = require("./api");

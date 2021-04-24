@@ -32,12 +32,8 @@ exports.login = async (req, res) => {
     expiresIn: "1d",
   });
 
-  res.cookie("cookieToken", token, {
-    httpOnly: true,
-    // secure: true,
-    sameSite: "None",
-    maxAge: 12 * 60 * 60 * 1000,
-  }); // add secure: true for production
+  res.cookie("cookieToken", token, { httpOnly: true });
+  //res.cookie("cookieToken", token, { httpOnly: true, secure: true, sameSite: "None", maxAge: 12*60*60*1000 }); // add secure: true for production
 
   res.status(200).send({
     id: _id,
@@ -52,46 +48,54 @@ exports.login = async (req, res) => {
 };
 
 // Update Profile
-exports.updateProfile = async (req, res) => {
-  const { name, surname, email, phone, avatarUri } = req.body;
-
-  await User.findOne(
-    {
-      email: req.body.email,
-    },
-    async (err, user) => {
-      if (err) {
-        return res.status(500).send({ message: err });
-      }
-
-      if (!user || user._id == req.user._id) {
-        await User.findOneAndUpdate(
-          req.user._id,
-          req.body,
-          async (err, user) => {
-            if (err) return res.status(500).send({ message: err });
-
-            res.status(200).send({
-              name,
-              surname,
-              email,
-              phone,
-              avatarUri,
-              // accessToken: token, // use cookie instead
-            });
-          }
-        );
-      } else {
-        return res
-          .status(400)
-          .send({ message: "Failed! Email is already in use!" });
-      }
+exports.updateProfile = (req, res) => {
+  User.findOne({
+    email: req.body.email,
+  }).exec((err, user) => {
+    if (err) {
+      return res.status(500).send({ message: err });
     }
-  );
+
+    if (!user || user._id == req.user._id) {
+      User.findOne({
+        phone: req.body.phone,
+      }).exec((err, user) => {
+        if (err) {
+          return res.status(500).send({ message: err });
+        }
+
+        if (!user || user._id == req.user._id) {
+          User.findOneAndUpdate(req.user._id, req.body, { new: true }).exec(
+            (err, user) => {
+              if (err) return res.status(500).send({ message: err });
+
+              console.log(user);
+              res.status(200).send({
+                name: user.name,
+                surname: user.surname,
+                email: user.email,
+                phone: user.phone,
+                avatarUri: user.avatarUri,
+                // accessToken: token, // use cookie instead
+              });
+            }
+          );
+        } else {
+          return res
+            .status(400)
+            .send({ message: "Failed! Phone number is already in use!" });
+        }
+      });
+    } else {
+      return res
+        .status(400)
+        .send({ message: "Failed! Email is already in use!" });
+    }
+  });
 };
 
 // Reset password
-exports.resetPassword = async (req, res) => {
+exports.resetPassword = (req, res) => {
   const { password, newPassword, reNewPassword } = req.body;
 
   User.findOne(
@@ -99,12 +103,12 @@ exports.resetPassword = async (req, res) => {
       _id: req.user._id,
     },
     "+password",
-    async (err, user) => {
+    (err, user) => {
       if (err) {
         return res.status(500).send({ message: err });
       }
 
-      await bcrypt.compare(password, user.password, (err, same) => {
+      bcrypt.compare(password, user.password, (err, same) => {
         if (err) {
           return res.status(500).send({ message: err });
         }
@@ -114,20 +118,23 @@ exports.resetPassword = async (req, res) => {
         }
 
         if (newPassword !== reNewPassword) {
-          return res.status(400).send({
-            message: "Failed! New password and Confirm password doesn't match!",
-          });
+          return res
+            .status(400)
+            .send({
+              message:
+                "Failed! New password and Confirm password doesn't match!",
+            });
         }
 
-        bcrypt.hash(newPassword, 10, async (err, hashed) => {
+        bcrypt.hash(newPassword, 10, (err, hashed) => {
           if (err) return errorRes(res, err, "unable to sign up, try again");
 
-          await User.findOneAndUpdate(
+          User.findOneAndUpdate(
             req.user._id,
             {
               password: hashed,
             },
-            async (err, user) => {
+            (err, user) => {
               if (err) return res.status(500).send({ message: err });
 
               return res

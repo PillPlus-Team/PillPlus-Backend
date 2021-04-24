@@ -31,7 +31,7 @@ exports.addAccount = (req, res) => {
 }
 
 // Get all accounts
-exports.getAllAccounts = async (req, res) => {
+exports.getAllAccounts = (req, res) => {
     User.find({}, "-createdAt -updatedAt", (err, user) => {
         if (err) {
             return res.status(500).send({ message: "Cannot get all accounts!!" });
@@ -41,41 +41,40 @@ exports.getAllAccounts = async (req, res) => {
 }
 
 // Update Profile
-exports.updateAccount = async (req, res) => {
-    const { name, surname, email, phone, role } = req.body;
+exports.updateAccount = (req, res) => {
   
-    await User.findOne({
+    User.findOne({
         email: req.body.email
-    }, async (err, user) => {
+    }).exec((err, user) => {
       if (err) {
         return res.status(500).send({ message: err });
       }
-
+        
       if (!user || user._id == req.params._id) {
 
-        await User.fineOne({
+        User.findOne({
           phone: req.body.phone
-        }, async (err, user) => {
+        }).exec((err, user) => {
           if (err) {
             return res.status(500).send({ message: err });;
           }
   
           if(!user || user._id == req.params._id) {
 
-            await User.findOneAndUpdate({
+            User.findOneAndUpdate({
                 _id: req.params._id
-                },
-                req.body,
-                async (err, user) => {
+                }, req.body,
+                { new: true })
+                .exec((err, user) => {
                     if (err) 
                     return res.status(500).send({ message: err });
             
                     res.status(200).send({
                         _id: req.params._id,
-                        name,
-                        surname,
-                        email,
-                        phone,
+                        name: user.name,
+                        surname: user.surname,
+                        email: user.email,
+                        phone: user.phone,
                         // accessToken: token, // use cookie instead
                     });
                 }
@@ -92,7 +91,7 @@ exports.updateAccount = async (req, res) => {
 }
 
   // Delete account 
-exports.deleteAccount = async (req, res) => {
+exports.deleteAccount = (req, res) => {
     User.deleteOne({
         _id: req.params._id
     }, (err) => {
