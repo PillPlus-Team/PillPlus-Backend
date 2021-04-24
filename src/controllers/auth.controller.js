@@ -26,7 +26,7 @@ exports.verifyPassword = (req, res, next) => {
 };
 
 exports.login = async (req, res) => {
-  var { _id, name, surname, email, phone, role, avatarUrl } = req.body;
+  var { _id, name, surname, email, phone, role, avatarUri } = req.body;
   var token = await jwt.sign({ _id, role }, process.env.JWT_SECRET, {
     algorithm: "HS512",
     expiresIn: "1d",
@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
     email: email,
     phone: phone,
     role: role,
-    avatarUrl: avatarUrl,
+    avatarUri: avatarUri,
     // accessToken: token, // use cookie instead
   });
 };
