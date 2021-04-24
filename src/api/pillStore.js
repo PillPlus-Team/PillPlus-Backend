@@ -7,7 +7,6 @@ const {
   checkDuplicateEmailOrPhone 
 } = require("../common/middleware");
 
-const PillStore = require("../models").pillStore;
 const controller = require('../controllers/PillStore.controller');
 
 // ---------------------------- API ---------------------------- //

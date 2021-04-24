@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const { update } = require("../common/crud");
 const { onlyAdmin } = require("../common/middleware");
 
-const Pill = require("../models").pill;
 const controller = require('../controllers/Pill.controller');
 
 router.get("/all", controller.getAllPills); // fetch All data

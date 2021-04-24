@@ -130,7 +130,7 @@ exports.resetPassword = (req, res) => {
 
                 bcrypt.hash(newPassword, 10, (err, hashed) => {
                     if (err) 
-                        return errorRes(res, err, "unable to sign up, try again");
+                        return errorRes(res, err, "unable to reset password, try again");
 
                     User.findOneAndUpdate(
                         req.user._id, {
