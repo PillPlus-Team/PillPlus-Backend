@@ -6,6 +6,7 @@ const path = require("path");
 
 require("dotenv").config();
 require("./db");
+require("./realtime");
 
 const middleware = require("./common/middleware");
 const api = require("./api");
@@ -21,8 +22,8 @@ app.use(
 
 const corsOptions = {
   origin: process.env.ORIGIN_CORS,
-  credentials: true
-}
+  credentials: true,
+};
 
 app.use(helmet());
 app.use(cors(corsOptions));

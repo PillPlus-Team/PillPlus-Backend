@@ -23,12 +23,11 @@ const upload = multer({
 
 router.post("/avatar", upload.single("avatar"), (req, res, next) => {
   if (!req.file) return errorRes(res, "upload failed", 401);
-  return successRes(res, { avatar: req.file.filename });
+  return successRes(res, { avatarUri: req.file.filename });
 });
 
 router.get("/avatar", (req, res) => {
-  const { avatar } = req.body;
-  res.sendFile(avatar, { root: "./avatars" });
+  res.sendFile(req.body.avatarUri, { root: "./avatars" });
 });
 
 module.exports = router;

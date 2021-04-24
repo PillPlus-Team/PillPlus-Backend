@@ -38,7 +38,7 @@ router.use(
     next();
   }
 );
-    
+
 router.use("/auth", auth);
 
 router.use(verifyToken);
