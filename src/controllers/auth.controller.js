@@ -13,7 +13,7 @@ exports.findByEmail = (req, res, next) => {
     req.body = { unhashedPassword: password, ...data };
     return next();
   });
-}
+};
 
 exports.verifyPassword = (req, res, next) => {
   const { unhashedPassword, password, ...userData } = req.body;
@@ -23,18 +23,14 @@ exports.verifyPassword = (req, res, next) => {
       return next();
     } else return errorRes(res, err, "password error, try again");
   });
-}
+};
 
 exports.login = async (req, res) => {
-  var { _id, name, surname, email, phone, role, avatarUrl } = req.body;
-  var token = await jwt.sign(
-    { _id, role },
-    process.env.JWT_SECRET,
-    {
-      algorithm: "HS512",
-      expiresIn: "1d",
-    }
-  );
+  var { _id, name, surname, email, phone, role, avatarUri } = req.body;
+  var token = await jwt.sign({ _id, role }, process.env.JWT_SECRET, {
+    algorithm: "HS512",
+    expiresIn: "1d",
+  });
 
   res.cookie("cookieToken", token, { httpOnly: true });
   //res.cookie("cookieToken", token, { httpOnly: true, secure: true, sameSite: "None", maxAge: 12*60*60*1000 }); // add secure: true for production
@@ -46,108 +42,111 @@ exports.login = async (req, res) => {
     email: email,
     phone: phone,
     role: role,
-    avatarUrl: avatarUrl,
+    avatarUri: avatarUri,
     // accessToken: token, // use cookie instead
   });
-}
+};
 
 // Update Profile
 exports.updateProfile = (req, res) => {
-
   User.findOne({
-      email: req.body.email
+    email: req.body.email,
   }).exec((err, user) => {
     if (err) {
       return res.status(500).send({ message: err });
     }
 
     if (!user || user._id == req.user._id) {
-
       User.findOne({
-        phone: req.body.phone
+        phone: req.body.phone,
       }).exec((err, user) => {
         if (err) {
           return res.status(500).send({ message: err });
         }
 
         if (!user || user._id == req.user._id) {
+          User.findOneAndUpdate(req.user._id, req.body, { new: true }).exec(
+            (err, user) => {
+              if (err) return res.status(500).send({ message: err });
 
-          User.findOneAndUpdate(
-            req.user._id,
-            req.body,
-            { new: true })
-            .exec((err, user) => {
-              if (err) 
-                return res.status(500).send({ message: err });
-    
-                console.log(user);
-                res.status(200).send({
-                  name: user.name,
-                  surname: user.surname,
-                  email: user.email,
-                  phone: user.phone,
-                  avatarUri: user.avatarUri,
-                  // accessToken: token, // use cookie instead
-                });
+              console.log(user);
+              res.status(200).send({
+                name: user.name,
+                surname: user.surname,
+                email: user.email,
+                phone: user.phone,
+                avatarUri: user.avatarUri,
+                // accessToken: token, // use cookie instead
+              });
             }
-          )
-
+          );
         } else {
-          return res.status(400).send({ message: "Failed! Phone number is already in use!"});
+          return res
+            .status(400)
+            .send({ message: "Failed! Phone number is already in use!" });
         }
-      })
-
+      });
     } else {
-      return res.status(400).send({ message: "Failed! Email is already in use!"})
+      return res
+        .status(400)
+        .send({ message: "Failed! Email is already in use!" });
     }
-  })
-}
+  });
+};
 
 // Reset password
 exports.resetPassword = (req, res) => {
-    const { password, newPassword, reNewPassword } = req.body;
+  const { password, newPassword, reNewPassword } = req.body;
 
-    User.findOne({
-        _id: req.user._id
-    },  "+password",
-        (err, user) => {
-            if (err) {
-                return res.status(500).send({ message: err });
-            }
+  User.findOne(
+    {
+      _id: req.user._id,
+    },
+    "+password",
+    (err, user) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
 
-            bcrypt.compare(password, user.password, (err, same) => {
-                if (err) {
-                  return res.status(500).send({ message: err });
-                }
+      bcrypt.compare(password, user.password, (err, same) => {
+        if (err) {
+          return res.status(500).send({ message: err });
+        }
 
-                if (!same) {
-                    return errorRes(res, err, "password error, try again");
-                }
+        if (!same) {
+          return errorRes(res, err, "password error, try again");
+        }
 
-                if (newPassword !== reNewPassword) {
-                    return res.status(400).send({ message: "Failed! New password and Confirm password doesn't match!"})
-                }
-
-                bcrypt.hash(newPassword, 10, (err, hashed) => {
-                    if (err) 
-                        return errorRes(res, err, "unable to reset password, try again");
-
-                    User.findOneAndUpdate(
-                        req.user._id, {
-                        password: hashed
-                      },
-                        (err, user) => {
-                            if (err) 
-                                return res.status(500).send({ message: err });
-                        
-                            return res.status(200).send({ message: "Reset password successful!" });
-                        }
-                    );
-                }); 
+        if (newPassword !== reNewPassword) {
+          return res
+            .status(400)
+            .send({
+              message:
+                "Failed! New password and Confirm password doesn't match!",
             });
         }
-    )
-}
+
+        bcrypt.hash(newPassword, 10, (err, hashed) => {
+          if (err) return errorRes(res, err, "unable to sign up, try again");
+
+          User.findOneAndUpdate(
+            req.user._id,
+            {
+              password: hashed,
+            },
+            (err, user) => {
+              if (err) return res.status(500).send({ message: err });
+
+              return res
+                .status(200)
+                .send({ message: "Reset password successful!" });
+            }
+          );
+        });
+      });
+    }
+  );
+};
 
 exports.handleNewPassword = (req, res, next) => {
   const { newPassword } = req.body;
@@ -158,10 +157,15 @@ exports.handleNewPassword = (req, res, next) => {
   }
 
   return next();
-}
+};
 
 // Log out
 exports.logout = (req, res) => {
-   res.cookie("cookieToken",'', { httpOnly: true, secure: true, sameSite: "None" , maxAge: -1 });
-   res.end();
-}
+  res.cookie("cookieToken", "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    maxAge: -1,
+  });
+  res.end();
+};

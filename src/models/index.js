@@ -11,5 +11,6 @@ db.pill = require("./Pill");
 db.pillStore = require("./PillStore");
 db.pillStorehouse = require("./PillStorehouse");
 db.prescriptions = require("./Prescriptions.model");
+db.invoice = require("./Invoices");
 
 module.exports = db;
