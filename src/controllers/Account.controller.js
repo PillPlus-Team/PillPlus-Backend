@@ -49,7 +49,7 @@ exports.updateAccount = (req, res) => {
       if (err) {
         return res.status(500).send({ message: err });
       }
-      console.log(user);
+        
       if (!user || user._id == req.params._id) {
 
         User.findOne({
@@ -58,8 +58,6 @@ exports.updateAccount = (req, res) => {
           if (err) {
             return res.status(500).send({ message: err });;
           }
-
-          console.log(user)
   
           if(!user || user._id == req.params._id) {
 
