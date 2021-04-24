@@ -10,5 +10,6 @@ db.user = require("./User");
 db.pill = require("./Pill");
 db.pillStore = require("./PillStore");
 db.pillStorehouse = require("./PillStorehouse");
+db.invoice = require("./Invoices");
 
 module.exports = db;

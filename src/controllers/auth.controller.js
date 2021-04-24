@@ -13,7 +13,7 @@ exports.findByEmail = (req, res, next) => {
     req.body = { unhashedPassword: password, ...data };
     return next();
   });
-}
+};
 
 exports.verifyPassword = (req, res, next) => {
   const { unhashedPassword, password, ...userData } = req.body;
@@ -23,20 +23,21 @@ exports.verifyPassword = (req, res, next) => {
       return next();
     } else return errorRes(res, err, "password error, try again");
   });
-}
+};
 
 exports.login = async (req, res) => {
   var { _id, name, surname, email, phone, role, avatarUrl } = req.body;
-  var token = await jwt.sign(
-    { _id, role },
-    process.env.JWT_SECRET,
-    {
-      algorithm: "HS512",
-      expiresIn: "1d",
-    }
-  );
+  var token = await jwt.sign({ _id, role }, process.env.JWT_SECRET, {
+    algorithm: "HS512",
+    expiresIn: "1d",
+  });
 
-  res.cookie("cookieToken", token, { httpOnly: true, secure: true, sameSite: "None", maxAge: 12*60*60*1000 }); // add secure: true for production
+  res.cookie("cookieToken", token, {
+    httpOnly: true,
+    // secure: true,
+    sameSite: "None",
+    maxAge: 12 * 60 * 60 * 1000,
+  }); // add secure: true for production
 
   res.status(200).send({
     id: _id,
@@ -48,28 +49,28 @@ exports.login = async (req, res) => {
     avatarUrl: avatarUrl,
     // accessToken: token, // use cookie instead
   });
-}
+};
 
 // Update Profile
 exports.updateProfile = async (req, res) => {
   const { name, surname, email, phone, avatarUri } = req.body;
 
-  await User.findOne({
-      email: req.body.email
-  }, async (err, user) => {
-    if (err) {
-      return res.status(500).send({ message: err });
-    }
+  await User.findOne(
+    {
+      email: req.body.email,
+    },
+    async (err, user) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
 
-    if (!user || user._id == req.user._id) {
+      if (!user || user._id == req.user._id) {
+        await User.findOneAndUpdate(
+          req.user._id,
+          req.body,
+          async (err, user) => {
+            if (err) return res.status(500).send({ message: err });
 
-      await User.findOneAndUpdate(
-        req.user._id,
-        req.body,
-        async (err, user) => {
-          if (err) 
-            return res.status(500).send({ message: err });
-    
             res.status(200).send({
               name,
               surname,
@@ -78,60 +79,67 @@ exports.updateProfile = async (req, res) => {
               avatarUri,
               // accessToken: token, // use cookie instead
             });
-        }
-      )
-
-    } else {
-      return res.status(400).send({ message: "Failed! Email is already in use!"})
+          }
+        );
+      } else {
+        return res
+          .status(400)
+          .send({ message: "Failed! Email is already in use!" });
+      }
     }
-  })
-}
+  );
+};
 
 // Reset password
 exports.resetPassword = async (req, res) => {
-    const { password, newPassword, reNewPassword } = req.body;
+  const { password, newPassword, reNewPassword } = req.body;
 
-    User.findOne({
-        _id: req.user._id
-    },  "+password",
-        async (err, user) => {
-            if (err) {
-                return res.status(500).send({ message: err });
-            }
+  User.findOne(
+    {
+      _id: req.user._id,
+    },
+    "+password",
+    async (err, user) => {
+      if (err) {
+        return res.status(500).send({ message: err });
+      }
 
-            await bcrypt.compare(password, user.password, (err, same) => {
-                if (err) {
-                  return res.status(500).send({ message: err });
-                }
-
-                if (!same) {
-                    return errorRes(res, err, "password error, try again");
-                }
-
-                if (newPassword !== reNewPassword) {
-                    return res.status(400).send({ message: "Failed! New password and Confirm password doesn't match!"})
-                }
-
-                bcrypt.hash(newPassword, 10, async (err, hashed) => {
-                    if (err) 
-                        return errorRes(res, err, "unable to sign up, try again");
-
-                    await User.findOneAndUpdate(
-                        req.user._id, {
-                        password: hashed
-                      },
-                        async (err, user) => {
-                            if (err) 
-                                return res.status(500).send({ message: err });
-                        
-                            return res.status(200).send({ message: "Reset password successful!" });
-                        }
-                    );
-                }); 
-            });
+      await bcrypt.compare(password, user.password, (err, same) => {
+        if (err) {
+          return res.status(500).send({ message: err });
         }
-    )
-}
+
+        if (!same) {
+          return errorRes(res, err, "password error, try again");
+        }
+
+        if (newPassword !== reNewPassword) {
+          return res.status(400).send({
+            message: "Failed! New password and Confirm password doesn't match!",
+          });
+        }
+
+        bcrypt.hash(newPassword, 10, async (err, hashed) => {
+          if (err) return errorRes(res, err, "unable to sign up, try again");
+
+          await User.findOneAndUpdate(
+            req.user._id,
+            {
+              password: hashed,
+            },
+            async (err, user) => {
+              if (err) return res.status(500).send({ message: err });
+
+              return res
+                .status(200)
+                .send({ message: "Reset password successful!" });
+            }
+          );
+        });
+      });
+    }
+  );
+};
 
 exports.handleNewPassword = (req, res, next) => {
   const { newPassword } = req.body;
@@ -142,10 +150,15 @@ exports.handleNewPassword = (req, res, next) => {
   }
 
   return next();
-}
+};
 
 // Log out
 exports.logout = (req, res) => {
-   res.cookie("cookieToken",'', { httpOnly: true, secure: true, sameSite: "None" , maxAge: -1 });
-   res.end();
-}
+  res.cookie("cookieToken", "", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    maxAge: -1,
+  });
+  res.end();
+};

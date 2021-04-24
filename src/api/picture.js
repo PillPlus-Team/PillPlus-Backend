@@ -27,8 +27,7 @@ router.post("/avatar", upload.single("avatar"), (req, res, next) => {
 });
 
 router.get("/avatar", (req, res) => {
-  const { avatar } = req.body;
-  res.sendFile(avatar, { root: "./avatars" });
+  res.sendFile(req.body.avatarUri, { root: "./avatars" });
 });
 
 module.exports = router;
