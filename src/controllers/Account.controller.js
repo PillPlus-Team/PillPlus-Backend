@@ -64,8 +64,8 @@ exports.updateAccount = (req, res) => {
             User.findOneAndUpdate({
                 _id: req.params._id
                 }, req.body,
-                { new: true })
-                .exec((err, user) => {
+                { new: true }
+                ,(err, user) => {
                     if (err) 
                     return res.status(500).send({ message: err });
             
@@ -75,6 +75,7 @@ exports.updateAccount = (req, res) => {
                         surname: user.surname,
                         email: user.email,
                         phone: user.phone,
+                        avatarUri: user.avatarUri
                         // accessToken: token, // use cookie instead
                     });
                 }

@@ -3,8 +3,7 @@ const router = express.Router();
 
 const { 
   onlyAdmin, 
-  handlePassword, 
-  checkDuplicateEmailOrPhone 
+  handlePassword
 } = require("../common/middleware");
 
 const controller = require('../controllers/PillStore.controller');

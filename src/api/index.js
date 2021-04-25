@@ -6,6 +6,8 @@ const pill = require("./pill");
 const account = require("./account");
 const pillStore = require("./pillStore");
 const picture = require("./picture");
+const prescription = require("./prescription");
+const invoice = require("./invoice");
 
 const expressJwt = require("express-jwt");
 const { notFound, verifyToken } = require("../common/middleware");
@@ -46,6 +48,8 @@ router.use("/pill", pill);
 router.use("/account", account);
 router.use("/pillStore", pillStore);
 router.use("/picture", picture);
+router.use("/prescription", prescription);
+router.use("/invoice", invoice);
 router.use(notFound);
 
 module.exports = router;

@@ -6,17 +6,22 @@ const PrescriptionsSchema = new Schema(
     {
         _id: ObjectId,
         hn: { type: String, required: true },
+        identificationNumber: { type: String, required: true },
         name: { type: String, required: true },
-        startTime: { type: String, required: true },
+        startTime: { type: Date, default: Date.now() },
         queueNo: { type: String, required: true },
         doctor: { type: String, required: true },
         pills: [{
+            _id: { type: ObjectId, select: false },
+            sn: { type: String, required: true },
             name: { type: String, required: true },
             description: { type: String, required: true },
             amount: { type: String, required: true },
             unit: { type: String, required: true }
-        }]
+        }],
+        status: { type: Boolean, default: false, required: true }
     }, {
+        timestamps: true,
         versionKey: false
     }
 );

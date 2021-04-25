@@ -6,18 +6,17 @@ const PillStorehouse = db.pillStorehouse;
 
 // Add pill store
 exports.CreateID = (req, res, next) => {
-    ID.findOne({}, (err, id) => {
+    ID.findOne({}, async (err, id) => {
         if(!id) {
-            const newID = new ID({ count: 1 });
-            newID.save((err, newID) => {
+            const newID = await new ID({ count: 1 });
+            await newID.save({ new: true }, (err, newID) => {
                 id = newID;
             });
         }
 
-        console.log(id)
         let count = id.count + 1;
 
-        ID.findOneAndUpdate({ _id: id._id }, { count: count },(err, newID) => {
+        await ID.findOneAndUpdate({ _id: id._id }, { count: count }, (err, newID) => {
             console.log(newID)
         });
 
@@ -43,18 +42,18 @@ exports.addPillStore = async (req, res) => {
         if (err) 
             return res.status(500).send({ message: err });
 
-        Pill.find({}, (err, pills) => {
+        Pill.find({}, async (err, pills) => {
             if (err) {
                 return res.status(500).send({ message: "Cannot add pill store!" });
             }
         
-            const pillStorehouse = new PillStorehouse({
+            const pillStorehouse = await new PillStorehouse({
                 _id: new db.mongoose.Types.ObjectId(),
                 store: user._id,
                 pill_list: pills
             })
 
-            pillStorehouse.save((err, account) => {
+            await pillStorehouse.save((err, account) => {
                 if (err)
                     return res.status(500).send({ message: "Cannot create pill storehouse!" });
 
@@ -114,7 +113,6 @@ exports.getAllPillStores = (req, res) => {
 
 // Update pill store
 exports.updatePillStore = (req, res) => {
-    const { name, pharmacy, location, email, phone } = req.body;
   
     PillStore.findOne({
         email: req.body.email
@@ -136,19 +134,21 @@ exports.updatePillStore = (req, res) => {
 
                     PillStore.findOneAndUpdate({
                         _id: req.params._id
-                        }, req.body)
-                        .exec((err, pillStore) => {
+                        }, req.body
+                        , { new: true }
+                        , (err, pillStore) => {
                             if (err) 
                                 return res.status(500).send({ message: err });
                     
+                            console.log(pillStore)
                             res.status(200).send({
                                 _id: req.params._id,
                                 ID: pillStore.ID,
-                                name,
-                                pharmacy,
-                                location,
-                                email,
-                                phone,
+                                name: pillStore.name, 
+                                pharmacy: pillStore.pharmacy,
+                                location: pillStore.location,
+                                email: pillStore.email,
+                                phone: pillStore.phone,
                                 // accessToken: token, // use cookie instead
                             });
                         }
