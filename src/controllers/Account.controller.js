@@ -75,6 +75,7 @@ exports.updateAccount = (req, res) => {
                         surname: user.surname,
                         email: user.email,
                         phone: user.phone,
+                        role: user.role,
                         avatarUri: user.avatarUri
                         // accessToken: token, // use cookie instead
                     });
