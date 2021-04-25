@@ -65,7 +65,7 @@ exports.updateProfile = (req, res) => {
         }
 
         if (!user || user._id == req.user._id) {
-          User.findOneAndUpdate(req.user._id, req.body, { new: true }).exec(
+          User.findOneAndUpdate({ _id: req.user._id }, req.body, { new: true }).exec(
             (err, user) => {
               if (err) return res.status(500).send({ message: err });
 
