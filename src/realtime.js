@@ -4,27 +4,27 @@ const Invoice = db.invoice;
 
 const io = require("socket.io")(process.env.SOCKET_PORT, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.ORIGIN_CORS,
     methods: ["GET", "POST"],
   },
 });
 
 io.on("connection", (socket) => {
-  console.log("socket connected!!!");
+  console.log("socket connected!!! socekt ID:", socket.id);
 
-  socket.on("test", (data) => {
-    updateData(socket, Invoice);
+  socket.on("join", (roomName) => {
+    // const newInvoice = new Invoice({
+    //   _id: new mongoose.Types.ObjectId(),
+    //   ...data,
+    // });
+    // newInvoice.save((err, data) => {
+    //   if (err) return socket.emit("invoce error", "can't add invoice");
+    // });
+    socket.join(roomName);
   });
 
-  socket.on("invoice", (data) => {
-    const newInvoice = new Invoice({
-      _id: new mongoose.Types.ObjectId(),
-      ...data,
-    });
-    newInvoice.save((err, data) => {
-      if (err) return socket.emit("invoce error", "can't add invoice");
-    });
-    updateData(socket, Invoice);
+  socket.on("room", (roomName) => {
+    io.to(roomName).emit("message", roomName + "!!!");
   });
 
   socket.on("disconnecting", () => {
@@ -35,15 +35,3 @@ io.on("connection", (socket) => {
     console.log("socket disconnected");
   });
 });
-
-const updateData = (socket, model) => {
-  model
-    .find({}, "-createdAt -updatedAt")
-    .populate("Pill")
-    .exec((err, data) => {
-      if (err) {
-        console.log({ message: "Cannot get all accounts!!" });
-      }
-      socket.emit("update invoice", data);
-    });
-};

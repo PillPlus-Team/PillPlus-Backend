@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
-const validator = require("validator");
 
 const userSchema = new Schema(
   {
@@ -14,7 +13,7 @@ const userSchema = new Schema(
       required: true,
       unique: true,
       lowercase: true,
-      validate: [validator.isEmail, "invalid email"],
+      validate: [/^[\w]+[\.\w-]*?@[\w]+(\.[\w]+)+$/, "invalid email"],
     },
     phone: {
       type: String,
