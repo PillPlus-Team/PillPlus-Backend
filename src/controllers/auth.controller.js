@@ -32,8 +32,8 @@ exports.login = async (req, res) => {
     expiresIn: "1d",
   });
 
-  res.cookie("cookieToken", token, { httpOnly: true });
-  //res.cookie("cookieToken", token, { httpOnly: true, secure: true, sameSite: "None", maxAge: 12*60*60*1000 }); // add secure: true for production
+  //res.cookie("cookieToken", token, { httpOnly: true });
+  res.cookie("cookieToken", token, { httpOnly: true, secure: true, sameSite: "None", maxAge: 12*60*60*1000 }); // add secure: true for production
 
   res.status(200).send({
     _id: _id,
@@ -65,7 +65,7 @@ exports.updateProfile = (req, res) => {
         }
 
         if (!user || user._id == req.user._id) {
-          User.findOneAndUpdate(req.user._id, req.body, { new: true }).exec(
+          User.findOneAndUpdate({ _id: req.user._id }, req.body, { new: true }).exec(
             (err, user) => {
               if (err) return res.status(500).send({ message: err });
 
@@ -75,6 +75,7 @@ exports.updateProfile = (req, res) => {
                 surname: user.surname,
                 email: user.email,
                 phone: user.phone,
+                role: user.role,
                 avatarUri: user.avatarUri,
                 // accessToken: token, // use cookie instead
               });
@@ -129,13 +130,15 @@ exports.resetPassword = (req, res) => {
         bcrypt.hash(newPassword, 10, (err, hashed) => {
           if (err) return errorRes(res, err, "unable to sign up, try again");
 
-          User.findOneAndUpdate(
-            req.user._id,
-            {
+          User.findOneAndUpdate({
+              _id: req.user._id 
+            }, {
               password: hashed,
             },
             (err, user) => {
               if (err) return res.status(500).send({ message: err });
+            
+              if (!user) return res.status(500).send({ message: "Cannot reset password!!" });
 
               return res
                 .status(200)
