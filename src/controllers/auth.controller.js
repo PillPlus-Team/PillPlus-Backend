@@ -129,13 +129,15 @@ exports.resetPassword = (req, res) => {
         bcrypt.hash(newPassword, 10, (err, hashed) => {
           if (err) return errorRes(res, err, "unable to sign up, try again");
 
-          User.findOneAndUpdate(
-            req.user._id,
-            {
+          User.findOneAndUpdate({
+              _id: req.user._id 
+            }, {
               password: hashed,
             },
             (err, user) => {
               if (err) return res.status(500).send({ message: err });
+            
+              if (!user) return res.status(500).send({ message: "Cannot reset password!!" });
 
               return res
                 .status(200)
