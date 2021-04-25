@@ -8,7 +8,7 @@ const Prescription = db.prescriptions;
 exports.createQueue = (req, res, next) => {
     Queue.findOne({}, async (err, queue) => {
         if(!queue) {
-            const newQueue = await new Queue({ count: 10001 });
+            const newQueue = await new Queue({ name: "Queu", count: 10001 });
             await newQueue.save((err, newQueue) => {
                 if (err) {
                     res.status(500).send({ message: err})
