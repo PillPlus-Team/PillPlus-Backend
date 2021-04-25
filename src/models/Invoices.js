@@ -6,20 +6,28 @@ const ObjectId = Schema.ObjectId;
 const invoiceSchema = new Schema(
   {
     _id: ObjectId,
-    prescriptionID: { type: String, required: true },
+    prescriptionID: { type: String, required: true, select: false  },
     identificationNumber: { type: String, required: true },
     hn: {
       type: String,
       required: true,
       validator: [/[0-9]{8,8}/, "invalid HN number"],
     },
+    hospitalNumber: { type: String, required: true, default: "1234567890" },
     name: { type: String, required: true },
-    startTime: { type: Date, default: Date.now() },
+    startTime: { type: String, default: Date.now() },
     queueNo: { type: String, required: true },
     doctor: { type: String, required: true },
-    pillStoreID: { type: String, required: true },
-    pillStorePharmacy: { type: String, required: true },
-    pillStoreLocation: { type: String, required: true },
+    pillStore: { 
+        ID: { type: String, required: true },
+        name: { type: String, required: true },
+        pharmacy: { type: String, required: true },
+        location: { type: String, required: true },
+        lat: { type: String, required: true },
+        lng: { type: String, required: true },
+        phone: { type: String, required: true },
+        email: { type: String, required: true } 
+    },
     pills: [
       {
         _id: { type: ObjectId, select: false },
@@ -32,6 +40,7 @@ const invoiceSchema = new Schema(
       },
     ],
     serviceCharge: { type: Number, default: 30, required: true },
+    totalPay: { type: Number, default: 30, required: true },
     paidStatus: { type: Boolean, default: false, required: true }
   },
   {

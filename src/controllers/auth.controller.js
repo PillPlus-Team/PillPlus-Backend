@@ -167,5 +167,34 @@ exports.logout = (req, res) => {
     sameSite: "None",
     maxAge: -1,
   });
-  res.end();
+  return res.end();
 };
+
+const Invoice = db.invoice;
+
+// Patients login
+exports.patientLogin = (req, res) => {
+    try {
+        Invoice.findOne({ _id: req.body._id }, "+prescriptionID", async (err, inv) => {
+            if (err) {
+                return res.status(500).send({ message: err });
+            }
+
+            if (req.body.identificationNumber == inv.identificationNumber) {
+
+                var token = await jwt.sign({ _id: inv._id }, process.env.JWT_SECRET, {
+                  algorithm: "HS512",
+                  expiresIn: "10m",
+                });
+              
+                res.cookie("cookieToken", token, { httpOnly: true, secure: true, sameSite: "None", maxAge: 10*60*1000 }); // add secure: true for production
+            
+                return res.status(200).send(inv);
+            } else {
+                return res.status(500).send({ message: "Cannot get data by this ID!" });
+            }
+        })
+    } catch (err) {
+        return res.status(500).send({ message: "Cannot get data by this ID!" });
+    }
+}

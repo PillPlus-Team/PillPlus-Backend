@@ -5,27 +5,16 @@ const PillStore = db.pillStore;
 const Prescription = db.prescriptions;
 
 // Create queue for patient
-exports.createQueue = (req, res, next) => {
-    Queue.findOne({}, async (err, queue) => {
-        if(!queue) {
-            const newQueue = await new Queue({ count: 10001 });
-            await newQueue.save((err, newQueue) => {
-                if (err) {
-                    res.status(500).send({ message: err})
-                }
-                queue = newQueue;
-            });
-        }
+exports.createQueue = async (req, res, next) => {
+    Queue.findOne({ name: "Prescription" }, async (err, queue) => {
 
-        let count = queue.count;
+        let count = queue.count + 1;
 
-        Queue.findOneAndUpdate({ _id: queue._id }, { count: count + 1 },(err, newQueue) => {
+        Queue.findOneAndUpdate({ _id: queue._id }, { count: count },(err, newQueue) => {
+            console.log(newQueue);
         });
 
-        let stringQueue = count.toString();
-        for (var i = 0; i < 6 - stringQueue.length; i++) {
-            stringQueue = "0" + stringQueue;
-        }
+        let stringQueue = (count + 50000).toString();
 
         req.body.queueNo = stringQueue;
 
@@ -47,77 +36,10 @@ exports.receivePrescriptions = (req, res) => {
 
 
 exports.getPrescriptions = (req, res) => {
-    Prescription.find({}, "-createdAt -updatedAt", (err, docs) =>{
+    Prescription.find({ status: false }, "-createdAt -updatedAt", (err, docs) =>{
         if (err) {
             return res.status(500).send({ message: err });
         }
         return res.status(200).send(docs);
     })
-}
-
-exports.selectPillStore = (req, res) => {
-    PillStore.findOne(
-        {
-            ID: req.body.pillStoreID
-        }, (err, pillStore) => {
-            if (err) {
-                return res.status(500).send({ message: err });
-            }
-
-            console.log(pillStore)
-
-            Invoice.findOneAndUpdate(
-                { prescriptionID: req.body._id.toString() },
-                {
-                    pillStoreID: pillStore.ID,
-                    pillStorePharmacy: pillStore.pharmacy,
-                    pillStoreLocation: pillStore.location,
-                },
-                { new: true },
-                (err, invoice) => {
-                    
-                    if (err) {
-                        return res.status(500).send({ message: err });
-                    }
-
-                    if (invoice) {
-                        return res.status(200).send(invoice);
-                    }
-
-                    console.log(invoice)
-
-                    Prescription.findOneAndUpdate({ _id: req.body._id }, { status: true }, (err, docs) => {
-                        if (err) {
-                            return res.status(500).send({ message: err });
-                        }
-
-                        console.log(docs);
-                            
-                        const newInvoice = new Invoice({
-                            _id: new db.mongoose.Types.ObjectId(),
-                            prescriptionID: req.body._id.toString(),
-                            identificationNumber: docs.identificationNumber,
-                            hn: docs.hn,
-                            name: docs.name,
-                            queueNo: docs.queueNo,
-                            doctor: docs.doctor,
-                            pillStoreID: pillStore.ID,
-                            pillStorePharmacy: pillStore.pharmacy,
-                            pillStoreLocation: pillStore.location,
-                            pills: docs.pills,
-                        });
-                        
-                        newInvoice.save((err, newInvoice) => {
-                            if (err) {
-                                return res.status(500).send({ message: err });
-                            }
-            
-                            return res.status(200).send(newInvoice);
-                        })
-                    });
-
-                }
-            )
-        }
-    )
 }

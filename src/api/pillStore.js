@@ -11,6 +11,7 @@ const controller = require('../controllers/PillStore.controller');
 // ---------------------------- API ---------------------------- //
 
 router.get("/all", controller.getAllPillStores); // fetch All data
+router.get("/:_id", controller.getAvailablePillStores);
 
 router.use(onlyAdmin);
 router.post("/", 
