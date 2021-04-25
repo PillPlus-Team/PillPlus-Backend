@@ -30,7 +30,7 @@ exports.addPill = (req, res) => {
                 });
             });
 
-            return res.status(200).send({ message: "Add pill successful"});
+            return res.status(200).send(pill);
         })
 
 
@@ -56,8 +56,9 @@ exports.updatePill = (req, res) => {
         if (!pill || pill._id == req.params._id) {
             Pill.findOneAndUpdate({
                 _id: req.params._id
-                }, req.body)
-                .exec((err, pill) => {
+                }, req.body
+                , { new: true }
+                , (err, pill) => {
                     if (err) 
                         return res.status(500).send({ message: err });
                     return res.status(200).send(pill);

@@ -3,11 +3,9 @@ const router = express.Router();
 
 const { 
   onlyAdmin, 
-  handlePassword, 
-  checkDuplicateEmailOrPhone 
+  handlePassword
 } = require("../common/middleware");
 
-const PillStore = require("../models").pillStore;
 const controller = require('../controllers/PillStore.controller');
 
 // ---------------------------- API ---------------------------- //

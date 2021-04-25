@@ -5,11 +5,13 @@ const db = {};
 
 db.mongoose = mongoose;
 
-db.id = require("./ID.model");
 db.user = require("./User");
 db.pill = require("./Pill");
+db.id = require("./ID.model");
+db.invoice = require("./Invoices");
+db.queue = require("./Queue.model");
 db.pillStore = require("./PillStore");
 db.pillStorehouse = require("./PillStorehouse");
-db.invoice = require("./Invoices");
+db.prescriptions = require("./Prescriptions.model");
 
 module.exports = db;
