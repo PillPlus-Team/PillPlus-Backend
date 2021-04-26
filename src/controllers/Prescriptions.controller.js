@@ -7,6 +7,9 @@ const Prescription = db.prescriptions;
 // Create queue for patient
 exports.createQueue = async (req, res, next) => {
     Queue.findOne({ name: "Prescription" }, async (err, queue) => {
+        if (!queue) {
+            return res.status(500).send({ message: "Cannot create queue for this prescription!!"});
+        }
 
         let count = queue.count + 1;
 
