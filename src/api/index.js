@@ -42,13 +42,13 @@ router.use(
 );
 
 router.use("/auth", auth);
+router.use("/prescription", prescription);
 
 router.use(verifyToken);
 router.use("/pill", pill);
 router.use("/account", account);
 router.use("/pillStore", pillStore);
 router.use("/picture", picture);
-router.use("/prescription", prescription);
 router.use("/invoice", invoice);
 router.use(notFound);
 
