@@ -9,11 +9,10 @@ const controller = require('../controllers/Prescriptions.controller');
 
 // ---------------------------- API ---------------------------- //
 
-router.get("/all", controller.getPrescriptions); // fetch All data
+router.get("/", controller.getPrescriptions); // fetch All data
 router.post("/", 
             controller.createQueue,
             controller.receivePrescriptions
           );
-router.post("/selectPillStore", controller.selectPillStore);
 
 module.exports = router;
