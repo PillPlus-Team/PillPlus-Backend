@@ -28,8 +28,8 @@ router.post("/avatar", upload.single("avatar"), (req, res, next) => {
   });
 });
 
-router.get("/avatar", (req, res) => {
-  res.sendFile(req.body.avatarUri, { root: "./avatars" });
+router.get("/avatar/:filename", (req, res) => {
+  res.sendFile(req.params.filename, { root: "./avatars" });
 });
 
 module.exports = router;
