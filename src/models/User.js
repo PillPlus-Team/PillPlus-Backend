@@ -25,7 +25,11 @@ const userSchema = new Schema(
       enum: ["Super Administrator", "Administrator", "Cashier", "Staff"],
       required: true,
     },
-    avatarUri: { type: String, default: "avatar.jpg", required: true },
+    avatarUri: {
+      type: String,
+      default: "https://api.pillplus.store/api/v1/picture/avatar.jpg",
+      required: true,
+    },
     password: { type: String, required: true, select: false },
   },
   {
