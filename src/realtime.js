@@ -25,8 +25,10 @@ io.on("connection", (socket) => {
           console.log(data);
         });
       } else {
-        data.socketID.push(socket.id);
-        data.save();
+        if (!data.socketID.includes(socket.id)) {
+          data.socketID.push(socket.id);
+          data.save();
+        }
       }
     });
     socket.join(roomName);
@@ -42,8 +44,8 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("leave", () => {
-    sockets.findOne({ socketID: socket.id }, (err, data) => {
+  socket.on("leave", (roomName) => {
+    sockets.findOne({ roomName: roomName }, (err, data) => {
       if (data) {
         data.socketID.pull(socket.id);
         data.save();
