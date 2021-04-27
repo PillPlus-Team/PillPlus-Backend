@@ -23,7 +23,9 @@ const upload = multer({
 
 router.post("/avatar", upload.single("avatar"), (req, res, next) => {
   if (!req.file) return errorRes(res, "upload failed", 401);
-  return successRes(res, { avatarUri: req.file.filename });
+  return successRes(res, {
+    avatarUri: "https://api.pillplus.store/api/v1/picture/" + req.file.filename,
+  });
 });
 
 router.get("/avatar", (req, res) => {
