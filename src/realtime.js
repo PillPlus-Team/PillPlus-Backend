@@ -55,5 +55,13 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("socket disconnected");
+    sockets.find({ socketID: socket.id }, (err, datas) => {
+      if (datas) {
+        datas.map((data) => {
+          data.socketID.pull(socket.id);
+          data.save();
+        });
+      }
+    });
   });
 });
