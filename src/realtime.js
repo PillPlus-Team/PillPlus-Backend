@@ -42,13 +42,16 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("disconnect", () => {
-    console.log("socket disconnected");
+  socket.on("leave", () => {
     sockets.findOne({ socketID: socket.id }, (err, data) => {
       if (data) {
         data.socketID.pull(socket.id);
         data.save();
       }
     });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("socket disconnected");
   });
 });
