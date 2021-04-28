@@ -49,6 +49,7 @@ io.on("connection", (socket) => {
       if (data) {
         data.socketID.pull(socket.id);
         data.save();
+        socket.leave(roomName);
       }
     });
   });
