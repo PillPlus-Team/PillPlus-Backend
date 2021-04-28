@@ -10,8 +10,8 @@ const io = require("socket.io")(process.env.SOCKET_PORT, {
 io.on("connection", (socket) => {
   console.log("socket connected!!! socekt ID:", socket.id);
 
-  socket.on("join", (roomName) => {
-    sockets.findOne({ roomName: roomName }, (err, data) => {
+  socket.on("join", async (roomName) => {
+    await sockets.findOne({ roomName: roomName }, async (err, data) => {
       if (err) {
         socket.emit("err", "invalid name room");
       }
@@ -20,20 +20,22 @@ io.on("connection", (socket) => {
           roomName: roomName,
           socketID: [socket.id],
         });
-        newSocket.save((err, data) => {
+        await newSocket.save((err, data) => {
           if (err) socket.emit("err", "can't join room please try again");
           console.log(data);
         });
       } else {
-        data.socketID.push(socket.id);
-        data.save();
+        if (!data.socketID.includes(socket.id)) {
+          data.socketID.push(socket.id);
+          data.save();
+        }
       }
     });
     socket.join(roomName);
   });
 
-  socket.on("room", (roomName) => {
-    sockets.findOne({ roomName: roomName }, (err, data) => {
+  socket.on("room", async (roomName) => {
+    await sockets.findOne({ roomName: roomName }, (err, data) => {
       if (err) socket.emit("err", "invalid name room");
       if (!data || !data.socketID.includes(socket.id))
         socket.emit("err", "access deny");
@@ -42,12 +44,24 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("disconnect", () => {
-    console.log("socket disconnected");
-    sockets.findOne({ socketID: socket.id }, (err, data) => {
+  socket.on("leave", async (roomName) => {
+    await sockets.findOne({ roomName: roomName }, async (err, data) => {
       if (data) {
         data.socketID.pull(socket.id);
-        data.save();
+        await data.save();
+        socket.leave(roomName);
+      }
+    });
+  });
+
+  socket.on("disconnect", async () => {
+    console.log("socket disconnected");
+    await sockets.find({ socketID: socket.id }, (err, datas) => {
+      if (datas) {
+        datas.map(async (data) => {
+          data.socketID.pull(socket.id);
+          await data.save();
+        });
       }
     });
   });
