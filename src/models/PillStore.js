@@ -11,8 +11,10 @@ const PillStoreSchema = new Schema(
     name: { type: String, required: true },
     pharmacy: { type: String, required: true },
     location: { type: String, required: true },
-    lat: { type: String, required: true },
-    lng: { type: String, required: true },
+    coordinate: {
+      lat: { type: String, required: true },
+      lng: { type: String, required: true }
+    },
     phone: {
       type: String,
       required: true,
