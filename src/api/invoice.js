@@ -9,8 +9,10 @@ const controller = require('../controllers/Invoice.controller');
 
 // ---------------------------- API ---------------------------- //
 
-router.get("/", controller.getAllInvoices); // fetch All data
+// For staff
 router.post("/selectPillStore", controller.createQueue, controller.selectPillStore);
+// For cashier
+router.get("/", controller.getAllInvoices); // fetch All data
 router.put("/update", controller.updateInvoice);
 router.post("/:_id", controller.invoicePaid);
 

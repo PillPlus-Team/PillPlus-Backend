@@ -15,7 +15,7 @@ const invoiceSchema = new Schema(
     },
     hospitalNumber: { type: String, required: true, default: "1234567890" },
     name: { type: String, required: true },
-    startTime: { type: String, default: Date.now() },
+    startTime: { type: String, default: Date.now },
     queueNo: { type: String, required: true },
     doctor: { type: String, required: true },
     pillStore: { 
@@ -44,7 +44,7 @@ const invoiceSchema = new Schema(
     paidStatus: { type: Boolean, default: false, required: true }
   },
   {
-    timestamps: true,
+    timestamps: false,
     versionKey: false,
   }
 );

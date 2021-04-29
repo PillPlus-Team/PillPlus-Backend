@@ -29,7 +29,7 @@ exports.createQueue = async (req, res, next) => {
 exports.receivePrescriptions = (req, res) => {
     const prescription = new Prescription({
         _id: new db.mongoose.Types.ObjectId,
-        ...req.body
+        ...req.body,
     })
 
     prescription.save((err, docs) => {

@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const { 
-  onlyAdmin, 
-  handlePassword
+  onlyAdmin,
+  handlePassword,
 } = require("../common/middleware");
 
 const controller = require('../controllers/PillStore.controller');

@@ -34,10 +34,7 @@ function verifyToken(req, res, next) {
 // Valid password
 function handlePassword(req, res, next) {
   const { password, ...body } = req.body;
-  if (!password || password.length < 1) {
-    req.body = body;
-    return next();
-  }
+
   if (password.length < 6)
     return errorRes(
       res,
@@ -54,39 +51,26 @@ function handlePassword(req, res, next) {
 }
 
 // Check duplicate Email and Phone
-function checkDuplicateEmailOrPhone(req, res, next) {
-  // Username
-  User.findOne({
-      email: req.body.email
-  }).exec((err, user) => {
-      if (err) {
-          res.status(500).send({ message: err });
-          return;
-      }
+const checkDuplicateEmailOrPhone = (model) => {
 
-      if (user) {
-          res.status(400).send({ message: "Failed! Email is already in use!"});
-          return;
-      }
+  return (req, res, next) => {
+    // Email
+    model.findOne({ email: req.body.email }).exec((err, user) => {
+        if (err)
+            return res.status(500).send({ message: err });
+        if (user)
+            return res.status(400).send({ message: "Failed! Email is already in use!"});
 
-      // Email
-      User.findOne({
-          phone: req.body.phone
-      }).exec((err, user) => {
-          if (err) {
-              res.status(500).send({ message: err });
-              return;
-          }
-
-          if (user) {
-              res.status(400).send({ message: "Failed! Phone is already in use!"});
-              return;
-          }
-
-          next();
-      });
-
-  });
+        // Phone
+        model.findOne({ phone: req.body.phone }).exec((err, user) => {
+            if (err)
+                return res.status(500).send({ message: err });
+            if (user)
+                return res.status(400).send({ message: "Failed! Phone is already in use!"});
+            next();
+        });
+    });
+  }
 };
 
 module.exports = {

@@ -8,7 +8,7 @@ const PrescriptionsSchema = new Schema(
         hn: { type: String, required: true },
         identificationNumber: { type: String, required: true },
         name: { type: String, required: true },
-        startTime: { type: String, default: Date.now() },
+        startTime: { type: String, default: Date.now },
         queueNo: { type: String, required: true },
         doctor: { type: String, required: true },
         pills: [{
@@ -21,7 +21,7 @@ const PrescriptionsSchema = new Schema(
         }],
         status: { type: Boolean, default: false, required: true }
     }, {
-        timestamps: true,
+        timestamps: false,
         versionKey: false
     }
 );

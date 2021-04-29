@@ -4,15 +4,17 @@ const { errorRes } = require("../common/response");
 const db = require("../models");
 const User = db.user;
 
-/// Login controller
-exports.findByEmail = (req, res, next) => {
-  const { email, password } = req.body;
-  User.findOne({ email }, "+password", { lean: true }, (err, data) => {
-    if (err || !data)
-      return errorRes(res, "invalid login", "invalid password or email");
-    req.body = { unhashedPassword: password, ...data };
-    return next();
-  });
+// Auth middleware
+exports.findByEmail = (model) => {
+  return (req, res, next) => {
+    const { email, password } = req.body;
+    model.findOne({ email }, "+password -createdAt -updatedAt", { lean: true }, (err, data) => {
+      if (err || !data)
+        return errorRes(res, "invalid login", "invalid password or email");
+      req.body = { unhashedPassword: password, ...data };
+      return next();
+    });
+  };
 };
 
 exports.verifyPassword = (req, res, next) => {
@@ -25,137 +27,126 @@ exports.verifyPassword = (req, res, next) => {
   });
 };
 
+/// Login controller
 exports.login = async (req, res) => {
-  var { _id, name, surname, email, phone, role, avatarUri } = req.body;
-  var token = await jwt.sign({ _id, role }, process.env.JWT_SECRET, {
-    algorithm: "HS512",
-    expiresIn: "1d",
-  });
+  try {
+    var { _id, role } = req.body;
+    var token = await jwt.sign({ _id, role }, process.env.JWT_SECRET, {
+      algorithm: "HS512",
+      expiresIn: "1d",
+    });
 
-  //res.cookie("cookieToken", token, { httpOnly: true });
-  res.cookie("cookieToken", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "None",
-    maxAge: 12 * 60 * 60 * 1000,
-  }); // add secure: true for production
+    res.cookie("cookieToken", token, { httpOnly: true });
+    // res.cookie("cookieToken", token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "None",
+    //   maxAge: 12 * 60 * 60 * 1000,
+    // }); // add secure: true for production
 
-  res.status(200).send({
-    _id: _id,
-    name: name,
-    surname: surname,
-    email: email,
-    phone: phone,
-    role: role,
-    avatarUri: avatarUri,
-    // accessToken: token, // use cookie instead
-  });
+    return res.status(200).send({
+      ...req.body
+    });
+  } catch (err) {
+    return res.status(500).send({ message: "Login failed!" });
+  }
 };
 
 // Update Profile
-exports.updateProfile = (req, res) => {
-  User.findOne({
-    email: req.body.email,
-  }).exec((err, user) => {
-    if (err) {
-      return res.status(500).send({ message: err });
-    }
-
-    if (!user || user._id == req.user._id) {
-      User.findOne({
-        phone: req.body.phone,
-      }).exec((err, user) => {
-        if (err) {
-          return res.status(500).send({ message: err });
-        }
-
-        if (!user || user._id == req.user._id) {
-          User.findOneAndUpdate({ _id: req.user._id }, req.body, {
-            new: true,
-          }).exec((err, user) => {
-            if (err) return res.status(500).send({ message: err });
-
-            console.log(user);
-            res.status(200).send({
-              name: user.name,
-              surname: user.surname,
-              email: user.email,
-              phone: user.phone,
-              role: user.role,
-              avatarUri: user.avatarUri,
-              // accessToken: token, // use cookie instead
-            });
-          });
-        } else {
-          return res
-            .status(400)
-            .send({ message: "Failed! Phone number is already in use!" });
-        }
-      });
-    } else {
-      return res
-        .status(400)
-        .send({ message: "Failed! Email is already in use!" });
-    }
-  });
-};
-
-// Reset password
-exports.resetPassword = (req, res) => {
-  const { password, newPassword, reNewPassword } = req.body;
-
-  User.findOne(
-    {
-      _id: req.user._id,
-    },
-    "+password",
-    (err, user) => {
+exports.updateProfile = (model) => {
+  return (req, res) => {
+    model.findOne({
+      email: req.body.email,
+    }).exec((err, user) => {
       if (err) {
         return res.status(500).send({ message: err });
       }
 
-      bcrypt.compare(password, user.password, (err, same) => {
+      if (!user || user._id == req.user._id) {
+        model.findOne({
+          phone: req.body.phone,
+        }).exec((err, user) => {
+          if (err) {
+            return res.status(500).send({ message: err });
+          }
+
+          if (!user || user._id == req.user._id) {
+            model.findOneAndUpdate({ _id: req.user._id }, req.body, {
+              new: true,
+            }).exec(async (err, user) => {
+              if (err) return res.status(500).send({ message: err });
+
+              await delete user._doc._id;
+
+              res.status(200).send({
+                ...user._doc
+                // accessToken: token, // use cookie instead
+              });
+            });
+          } else {
+            return res
+              .status(400)
+              .send({ message: "Failed! Phone number is already in use!" });
+          }
+        });
+      } else {
+        return res
+          .status(400)
+          .send({ message: "Failed! Email is already in use!" });
+      }
+    });
+  }
+};
+
+// Reset password
+exports.resetPassword = (model) => {
+  
+  return (req, res) => {
+    const { password, newPassword, reNewPassword } = req.body;
+
+    model.findOne({ _id: req.user._id, }, "+password",
+      (err, user) => {
         if (err) {
           return res.status(500).send({ message: err });
         }
 
-        if (!same) {
-          return errorRes(res, err, "password error, try again");
-        }
+        bcrypt.compare(password, user.password, (err, same) => {
+          if (err) {
+            return res.status(500).send({ message: err });
+          }
 
-        if (newPassword !== reNewPassword) {
-          return res.status(400).send({
-            message: "Failed! New password and Confirm password doesn't match!",
-          });
-        }
+          if (!same) {
+            return errorRes(res, err, "password error, try again");
+          }
 
-        bcrypt.hash(newPassword, 10, (err, hashed) => {
-          if (err) return errorRes(res, err, "unable to sign up, try again");
+          if (newPassword !== reNewPassword) {
+            return res.status(400).send({
+              message: "Failed! New password and Confirm password doesn't match!",
+            });
+          }
 
-          User.findOneAndUpdate(
-            {
-              _id: req.user._id,
-            },
-            {
-              password: hashed,
-            },
-            (err, user) => {
-              if (err) return res.status(500).send({ message: err });
+          bcrypt.hash(newPassword, 10, (err, hashed) => {
+            if (err) return errorRes(res, err, "unable to sign up, try again");
 
-              if (!user)
+            model.findOneAndUpdate({ _id: req.user._id, },{ password: hashed, },
+              (err, user) => {
+                if (err) return res.status(500).send({ message: err });
+
+                if (!user)
+                  return res
+                    .status(500)
+                    .send({ message: "Cannot reset password!!" });
+
                 return res
-                  .status(500)
-                  .send({ message: "Cannot reset password!!" });
-
-              return res
-                .status(200)
-                .send({ message: "Reset password successful!" });
-            }
-          );
+                  .status(200)
+                  .send({ message: "Reset password successful!" });
+              }
+            );
+          });
         });
-      });
-    }
-  );
+      }
+    );
+  }
 };
 
 exports.handleNewPassword = (req, res, next) => {
@@ -180,9 +171,9 @@ exports.logout = (req, res) => {
   return res.end();
 };
 
+// Patients login
 const Invoice = db.invoice;
 
-// Patients login
 exports.patientLogin = (req, res) => {
   try {
     Invoice.findOne(

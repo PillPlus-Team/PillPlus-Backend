@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const db = require("../models");
+
 const { 
     onlyAdmin, 
     handlePassword, 
@@ -23,7 +25,7 @@ router.get("/all", getAllAccounts); // fetch All data
 
 router.use(onlyAdmin);
 router.post("/", 
-            checkDuplicateEmailOrPhone, 
+            checkDuplicateEmailOrPhone(db.user), 
             handlePassword,
             addAccount
           );
