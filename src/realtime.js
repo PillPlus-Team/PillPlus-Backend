@@ -8,14 +8,6 @@ const io = require("socket.io")(process.env.SOCKET_PORT, {
   },
 });
 
-instrument(io, {
-  auth: {
-    type: "basic",
-    username: process.env.SOCKET_USERNAME,
-    password: process.env.SOCKET_PASSWORD,
-  },
-});
-
 io.on("connection", (socket) => {
   console.log("socket connected!!! socekt ID:", socket.id);
 
@@ -74,4 +66,12 @@ io.on("connection", (socket) => {
       }
     });
   });
+});
+
+instrument(io, {
+  auth: {
+    type: "basic",
+    username: process.env.SOCKET_USERNAME,
+    password: process.env.SOCKET_PASSWORD,
+  },
 });
