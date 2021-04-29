@@ -73,5 +73,5 @@ instrument(io, {
     type: "basic",
     username: process.env.SOCKET_USERNAME,
     password: process.env.SOCKET_PASSWORD,
-  },
+  }
 });
