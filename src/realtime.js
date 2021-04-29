@@ -1,9 +1,18 @@
 const sockets = require("./models").socket;
+const { instrument } = require("@socket.io/admin-ui");
 
 const io = require("socket.io")(process.env.SOCKET_PORT, {
   cors: {
     origin: process.env.ORIGIN_CORS,
     methods: ["GET", "POST"],
+  },
+});
+
+instrument(io, {
+  auth: {
+    type: "basic",
+    username: process.env.SOCKET_USERNAME,
+    password: process.env.SOCKET_PASSWORD,
   },
 });
 
