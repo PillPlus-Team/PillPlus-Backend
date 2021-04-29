@@ -5,6 +5,7 @@ const auth = require("./auth");
 const pill = require("./pill");
 const account = require("./account");
 const pillStore = require("./pillStore");
+const pillStorehouse = require("./pillStorehouse");
 const picture = require("./picture");
 const prescription = require("./prescription");
 const invoice = require("./invoice");
@@ -50,6 +51,7 @@ router.use("/account", account);
 router.use("/picture", picture);
 router.use("/invoice", invoice);
 router.use("/pillStore", pillStore);
+router.use("/pillStorehouse", pillStorehouse);
 router.use(notFound);
 
 module.exports = router;
