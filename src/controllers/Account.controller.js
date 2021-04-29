@@ -10,14 +10,13 @@ exports.addAccount = (req, res) => {
     _id: new mongoose.Types.ObjectId(),
     ...req.body,
   });
-  return newUser.save((err, data) => {
+  return newUser.save(async (err, data) => {
     if (err) return errorRes(res, err, "unable to create user");
 
-    const { _id, name, surname, email, phone, role, avatarUri } = data;
-
+    await delete data._doc.password;
     return res
       .status(200)
-      .send({ _id, name, surname, email, phone, role, avatarUri });
+      .send(data);
   });
 };
 
@@ -58,16 +57,7 @@ exports.updateAccount = (req, res) => {
             (err, user) => {
               if (err) return res.status(500).send({ message: err });
 
-              res.status(200).send({
-                _id: req.params._id,
-                name: user.name,
-                surname: user.surname,
-                email: user.email,
-                phone: user.phone,
-                role: user.role,
-                avatarUri: user.avatarUri,
-                // accessToken: token, // use cookie instead
-              });
+              res.status(200).send(user);
             }
           );
         } else {

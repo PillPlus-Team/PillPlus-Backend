@@ -47,9 +47,9 @@ router.use("/prescription", prescription);
 router.use(verifyToken);
 router.use("/pill", pill);
 router.use("/account", account);
-router.use("/pillStore", pillStore);
 router.use("/picture", picture);
 router.use("/invoice", invoice);
+router.use("/pillStore", pillStore);
 router.use(notFound);
 
 module.exports = router;

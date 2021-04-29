@@ -48,12 +48,13 @@ exports.addPillStore = async (req, res) => {
                 pill_list: pills
             })
 
-            await pillStorehouse.save((err, account) => {
+            await pillStorehouse.save(async (err, account) => {
                 if (err)
                     return res.status(500).send({ message: "Cannot create pill storehouse!" });
 
-                const { _id, ID, name, pharmacy, location, lat, lng, email, phone } = user;
-                return res.status(200).send({ _id, ID, name, pharmacy, location, lat, lng, email, phone }); 
+                await delete user._doc.createdAt;
+                await delete user._doc.updatedAt;
+                return res.status(200).send(user); 
             })
 
         });
@@ -117,17 +118,12 @@ exports.getAvailablePillStores = (req, res) => {
             }
 
             var allPillStores = [];
-            await pillStore.forEach(doc => {
-                const { name, pharmacy, location, lat, lng, phone, email, ID } = doc;
+            await pillStore.forEach(async doc => {
+                await delete doc._doc.createdAt;
+                await delete doc._doc.updatedAt;
+
                 allPillStores.push({ 
-                    ID,
-                    name,
-                    pharmacy,
-                    location,
-                    lat,
-                    lng,
-                    phone,
-                    email,
+                    ...doc,
                     status: true
                  });
             })

@@ -15,7 +15,7 @@ const pillSchema = new Schema(
     type: { type: String, enum: ["ED", "NED"], required: true },
   },
   {
-    timestamps: true,
+    timestamps: false,
     versionKey: false,
   }
 );
