@@ -2,7 +2,7 @@ const db = require('../models');
 const ID = db.id;
 const Pill = db.pill;
 const PillStore = db.pillStore;
-const Prescription = db.prescription;
+const Prescription = db.prescriptions;
 const PillStorehouse = db.pillStorehouse;
 
 // Add pill store
@@ -119,11 +119,8 @@ exports.getAvailablePillStores = (req, res) => {
 
             var allPillStores = [];
             await pillStore.forEach(async doc => {
-                await delete doc._doc.createdAt;
-                await delete doc._doc.updatedAt;
-
                 allPillStores.push({ 
-                    ...doc,
+                    ...doc._doc,
                     status: true
                  });
             })
