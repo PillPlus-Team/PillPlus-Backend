@@ -1,3 +1,4 @@
+const { pill } = require("../models");
 const db = require("../models");
 const ID = db.id;
 const Pill = db.pill;
@@ -46,7 +47,7 @@ exports.addPillStore = async (req, res) => {
       const pillStorehouse = await new PillStorehouse({
         _id: new db.mongoose.Types.ObjectId(),
         store: user._id,
-        pill_list: pills,
+        pill_list: pills.map((pill) => ({ pill_id: pill._id })),
       });
 
       await pillStorehouse.save(async (err, account) => {
