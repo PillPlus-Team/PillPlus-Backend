@@ -1,8 +1,9 @@
 const sockets = require("./models").socket;
+const { instrument } = require("@socket.io/admin-ui");
 
 const io = require("socket.io")(process.env.SOCKET_PORT, {
   cors: {
-    origin: process.env.ORIGIN_CORS,
+    origin: [ `${process.env.ORIGIN_CORS}`, "https://admin.pillplus.store"],
     methods: ["GET", "POST"],
   },
 });
@@ -65,4 +66,12 @@ io.on("connection", (socket) => {
       }
     });
   });
+});
+
+instrument(io, {
+  auth: {
+    type: "basic",
+    username: process.env.SOCKET_USERNAME,
+    password: process.env.SOCKET_PASSWORD,
+  },
 });
