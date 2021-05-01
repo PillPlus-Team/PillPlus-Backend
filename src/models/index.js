@@ -5,14 +5,14 @@ const db = {};
 
 db.mongoose = mongoose;
 
-db.user = require("./User");
-db.pill = require("./Pill");
 db.id = require("./ID.model");
-db.invoice = require("./Invoices");
+db.user = require("./User.model");
+db.pill = require("./Pill.model");
 db.queue = require("./Queue.model");
-db.socket = require("./Socket");
-db.pillStore = require("./PillStore");
-db.pillStorehouse = require("./PillStorehouse");
+db.socket = require("./Socket.model");
+db.invoice = require("./Invoices.model");
+db.pillStore = require("./PillStore.model");
 db.prescriptions = require("./Prescriptions.model");
+db.pillStorehouse = require("./PillStorehouse.model");
 
 module.exports = db;

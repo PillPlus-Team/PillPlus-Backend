@@ -21,4 +21,4 @@ const pillSchema = new Schema(
 );
 
 pillSchema.plugin(uniqueValidator);
-module.exports = mongoose.model("Pill", pillSchema, "pills");
+module.exports = mongoose.model("Pill", pillSchema, "Pills");
