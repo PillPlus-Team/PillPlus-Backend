@@ -73,7 +73,8 @@ const Invoice = db.invoice;
 exports.patientLogin = (req, res) => {
   try {
     Invoice.findOne(
-      { _id: req.body._id }
+      { _id: req.body._id },
+      "+prescriptionID"
     )
       .populate("pillStore") 
       .exec(async (err, inv) => {
@@ -81,6 +82,7 @@ exports.patientLogin = (req, res) => {
           return res.status(500).send({ message: err });
         }
 
+        console.log(inv)
         if (req.body.identificationNumber == inv.identificationNumber) {
           var token = await jwt.sign(
             { _id: inv._id, mode: "PATIENT" },
