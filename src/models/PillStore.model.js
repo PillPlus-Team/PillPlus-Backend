@@ -22,8 +22,8 @@ const PillStoreSchema = new Schema(
       }
     ],
     coordinate: {
-      lat: { type: String },
-      lng: { type: String }
+      lat: { type: Number },
+      lng: { type: Number }
     },
     phone: {
       type: String,
