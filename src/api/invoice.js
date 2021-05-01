@@ -1,19 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
-const { 
-  onlyAdmin
+const {
+  forStaff,
+  forCashier,
+  forPatient
 } = require("../common/middleware");
 
 const controller = require('../controllers/Invoice.controller');
 
 // ---------------------------- API ---------------------------- //
 
+router.put("/update", forPatient, controller.updateInvoice);
 // For staff
-router.post("/selectPillStore", controller.createQueue, controller.selectPillStore);
+router.post("/selectPillStore", forStaff, controller.createQueue, controller.selectPillStore);
 // For cashier
+router.use(forCashier);
 router.get("/", controller.getAllInvoices); // fetch All data
-router.put("/update", controller.updateInvoice);
 router.post("/:_id", controller.invoicePaid);
 
 module.exports = router;

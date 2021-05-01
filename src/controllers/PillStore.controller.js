@@ -3,7 +3,7 @@ const db = require("../models");
 const ID = db.id;
 const Pill = db.pill;
 const PillStore = db.pillStore;
-const Prescription = db.prescription;
+const Prescription = db.prescriptions;
 const PillStorehouse = db.pillStorehouse;
 
 // Add pill store
@@ -11,13 +11,7 @@ exports.CreateID = (req, res, next) => {
   ID.findOne({}, async (err, id) => {
     let count = id.count + 1;
 
-    await ID.findOneAndUpdate(
-      { _id: id._id },
-      { count: count },
-      (err, newID) => {
-        console.log(newID);
-      }
-    );
+    await ID.findOneAndUpdate({ _id: id._id }, { count: count });
 
     let stringID = count.toString();
     for (var i = 0; i < 8 - stringID.length; i++) {
@@ -34,9 +28,10 @@ exports.addPillStore = async (req, res) => {
   const pillStore = await new PillStore({
     _id: new db.mongoose.Types.ObjectId(),
     ...req.body,
+    pillStorehouse_id: "12345",
   });
 
-  pillStore.save((err, user) => {
+  pillStore.save(async (err, pillStore) => {
     if (err) return res.status(500).send({ message: err });
 
     Pill.find({}, async (err, pills) => {
@@ -46,8 +41,8 @@ exports.addPillStore = async (req, res) => {
 
       const pillStorehouse = await new PillStorehouse({
         _id: new db.mongoose.Types.ObjectId(),
-        store: user._id,
-        pill_list: pills.map((pill) => ({ pill_id: pill._id })),
+        store: pillStore._id,
+        pill_list: pills.map((pill) => ({ pill: pill._id })),
       });
 
       await pillStorehouse.save(async (err, account) => {
@@ -56,9 +51,20 @@ exports.addPillStore = async (req, res) => {
             .status(500)
             .send({ message: "Cannot create pill storehouse!" });
 
-        await delete user._doc.createdAt;
-        await delete user._doc.updatedAt;
-        return res.status(200).send(user);
+        PillStore.findOneAndUpdate(
+          { _id: pillStore._id },
+          { pillStorehouse_id: account._id },
+          { new: true }
+        ).exec(async (err, update) => {
+          if (err) return res.status(500).send({ message: err });
+
+          await delete update._doc.password;
+          await delete update._doc.pillStorehouse_id;
+          await delete update._doc.coordinate;
+          await delete update._doc.openingData;
+  
+          return res.status(200).send(update);
+        });
       });
     });
   });
@@ -101,38 +107,43 @@ exports.checkDuplicateEmailOrPhone = (req, res, next) => {
 
 // Get all pill stores
 exports.getAllPillStores = (req, res) => {
-  PillStore.find({}, "-createdAt -updatedAt", (err, pillStore) => {
-    if (err) {
-      return res.status(500).send({ message: "Cannot get all accounts!!" });
+  PillStore.find(
+    {},
+    "-coordinate -openingData +activated",
+    async (err, pillStore) => {
+      if (err) {
+        return res.status(500).send({ message: "Cannot get all accounts!!" });
+      }
+
+      return res.status(200).send(pillStore);
     }
-    pillStore;
-    return res.status(200).send(pillStore);
-  });
+  );
 };
 
 // Get available pill stores by pills data
 exports.getAvailablePillStores = (req, res) => {
   Prescription.findOne({ _id: req.params._id }, (err, inv) => {
-    //const pills = inv.pills;
+    // const pills = inv.pills;
 
-    PillStore.find({}, "-_id -createdAt -updatedAt", async (err, pillStore) => {
-      if (err) {
-        return res.status(500).send({ message: err });
-      }
+    PillStore.find(
+      {},
+      "-_id",
+      async (err, pillStore) => {
+        if (err) {
+          return res.status(500).send({ message: err });
+        }
 
-      var allPillStores = [];
-      await pillStore.forEach(async (doc) => {
-        await delete doc._doc.createdAt;
-        await delete doc._doc.updatedAt;
-
-        allPillStores.push({
-          ...doc,
-          status: true,
+        var allPillStores = [];
+        await pillStore.forEach(async (doc) => {
+          allPillStores.push({
+            ...doc._doc,
+            status: true,
+          });
         });
-      });
 
-      return res.status(200).send(allPillStores);
-    });
+        return res.status(200).send(allPillStores);
+      }
+    );
   });
 };
 
@@ -164,18 +175,7 @@ exports.updatePillStore = (req, res) => {
               if (err) return res.status(500).send({ message: err });
 
               console.log(pillStore);
-              res.status(200).send({
-                _id: req.params._id,
-                ID: pillStore.ID,
-                name: pillStore.name,
-                pharmacy: pillStore.pharmacy,
-                location: pillStore.location,
-                lat: pillStore.lat,
-                lng: pillStore.lng,
-                email: pillStore.email,
-                phone: pillStore.phone,
-                // accessToken: token, // use cookie instead
-              });
+              res.status(200).send(pillStore);
             }
           );
         }

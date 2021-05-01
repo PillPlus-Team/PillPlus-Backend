@@ -11,9 +11,19 @@ const PillStoreSchema = new Schema(
     name: { type: String, required: true },
     pharmacy: { type: String, required: true },
     location: { type: String, required: true },
+    openingData: [
+      {
+        day: { type: String },
+        opening: { type: Boolean },
+        openHour: { type: String },
+        openMinute: { type: String },
+        closeHour: { type: String },
+        closeMinute: { type: String }
+      }
+    ],
     coordinate: {
-      lat: { type: String, required: true },
-      lng: { type: String, required: true }
+      lat: { type: String },
+      lng: { type: String }
     },
     phone: {
       type: String,
@@ -27,7 +37,9 @@ const PillStoreSchema = new Schema(
       lowercase: true,
       validate: [/^[\w]+[\.\w-]*?@[\w]+(\.[\w]+)+$/, "invalid email"],
     },
+    pillStorehouse_id: { type: String, required: true, select: false },
     password: { type: String, required: true, select: false },
+    activated: { type: Boolean, default: false, select: false },
   },
   {
     timestamps: false,

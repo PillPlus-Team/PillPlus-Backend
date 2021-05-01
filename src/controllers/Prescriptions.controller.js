@@ -13,9 +13,7 @@ exports.createQueue = async (req, res, next) => {
 
         let count = queue.count + 1;
 
-        Queue.findOneAndUpdate({ _id: queue._id }, { count: count },(err, newQueue) => {
-            console.log(newQueue);
-        });
+        Queue.findOneAndUpdate({ _id: queue._id }, { count: count });
 
         let stringQueue = (count + 50000).toString();
 
