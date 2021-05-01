@@ -36,6 +36,13 @@ router.use(
   (err, req, res, next) => {
     if (err.name === "UnauthorizedError") {
       console.error(req.user, req.ip, "invalid token");
+      res.cookie("cookieToken", "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        maxAge: -1,
+      });
+      res.end();
       return errorRes(res, err, "Login to proceed", 401);
     }
     next();

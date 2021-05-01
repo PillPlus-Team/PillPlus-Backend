@@ -73,8 +73,10 @@ const Invoice = db.invoice;
 exports.patientLogin = (req, res) => {
   try {
     Invoice.findOne(
-      { _id: req.body._id },
-      async (err, inv) => {
+      { _id: req.body._id }
+    )
+      .populate("pillStore") 
+      .exec(async (err, inv) => {
         if (err) {
           return res.status(500).send({ message: err });
         }
