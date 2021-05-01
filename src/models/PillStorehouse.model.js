@@ -27,4 +27,4 @@ const PillStorehouseSchema = new Schema(
     }
 );
 
-module.exports = mongoose.model("PillStorehouse", PillStorehouseSchema, "PillStorehouse");
+module.exports = mongoose.model("PillStorehouse", PillStorehouseSchema, "PillStorehouses");
