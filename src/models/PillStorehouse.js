@@ -12,7 +12,7 @@ const PillStorehouseSchema = new Schema(
         },
         pill_list: [
             {
-                pill_id: {
+                pill: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "Pill"
                 },
@@ -23,7 +23,7 @@ const PillStorehouseSchema = new Schema(
         ]
     },
     {
-        version: false
+        versionKey: false
     }
 );
 

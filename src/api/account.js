@@ -3,11 +3,15 @@ const router = express.Router();
 
 const db = require("../models");
 
-const { 
-    onlyAdmin, 
-    handlePassword, 
-    checkDuplicateEmailOrPhone 
+const {
+    onlyAdmin,
+    forHospital
 } = require("../common/middleware");
+
+const {
+    handlePassword,
+    checkDuplicateEmailOrPhone
+} = require("../common/actions");
 
 const {
     addAccount,
@@ -18,12 +22,11 @@ const {
 
 const User = require("../models").user;
 
-
 // ---------------------------- API ---------------------------- //
 
-router.get("/all", getAllAccounts); // fetch All data
-
 router.use(onlyAdmin);
+
+router.get("/all", getAllAccounts); // fetch All data
 router.post("/", 
             checkDuplicateEmailOrPhone(db.user), 
             handlePassword,
@@ -31,19 +34,5 @@ router.post("/",
           );
 router.put("/:_id", updateAccount);
 router.delete("/:_id", deleteAccount);
-
-// Use when fetch some data
-function userAtPage(req, res, next) {
-  req.body = [{}, null, { limit: 25, skip: (req.params.page - 1) * 25 }];
-  return next();
-}
-
-// function haveAvatar(req, res, next) {
-//   const { avatar } = req.body;
-//   if (!avatar) {
-//     req.body.avatar = "avatar.jpg";
-//   }
-//   next();
-// }
 
 module.exports = router;

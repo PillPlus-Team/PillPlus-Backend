@@ -14,6 +14,7 @@ exports.addAccount = (req, res) => {
     if (err) return errorRes(res, err, "unable to create user");
 
     await delete data._doc.password;
+    await delete data._doc.avatarUri;
     return res
       .status(200)
       .send(data);
@@ -22,7 +23,7 @@ exports.addAccount = (req, res) => {
 
 // Get all accounts
 exports.getAllAccounts = (req, res) => {
-  User.find({}, "-createdAt -updatedAt", (err, user) => {
+  User.find({}, "-avatarUri -createdAt -updatedAt", (err, user) => {
     if (err) {
       return res.status(500).send({ message: "Cannot get all accounts!!" });
     }
@@ -37,6 +38,10 @@ exports.updateAccount = (req, res) => {
   }).exec((err, user) => {
     if (err) {
       return res.status(500).send({ message: err });
+    }
+
+    if (req.user.role === user.role) {
+      return res.status(500).send({ message: "Cannot edit admin users either!" });
     }
 
     if (!user || user._id == req.params._id) {
@@ -54,9 +59,10 @@ exports.updateAccount = (req, res) => {
             },
             req.body,
             { new: true },
-            (err, user) => {
+            async (err, user) => {
               if (err) return res.status(500).send({ message: err });
 
+              await delete user._doc.avatarUri;
               res.status(200).send(user);
             }
           );

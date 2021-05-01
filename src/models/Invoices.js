@@ -19,14 +19,8 @@ const invoiceSchema = new Schema(
     queueNo: { type: String, required: true },
     doctor: { type: String, required: true },
     pillStore: { 
-        ID: { type: String, required: true },
-        name: { type: String, required: true },
-        pharmacy: { type: String, required: true },
-        location: { type: String, required: true },
-        lat: { type: String, required: true },
-        lng: { type: String, required: true },
-        phone: { type: String, required: true },
-        email: { type: String, required: true } 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PillStore"
     },
     pills: [
       {
@@ -41,7 +35,7 @@ const invoiceSchema = new Schema(
     ],
     serviceCharge: { type: Number, default: 30, required: true },
     totalPay: { type: Number, default: 30, required: true },
-    paidStatus: { type: Boolean, default: false, required: true }
+    paidStatus: { type: Boolean, default: false, required: true, select: false }
   },
   {
     timestamps: false,

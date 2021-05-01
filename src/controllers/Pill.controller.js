@@ -20,7 +20,7 @@ exports.addPill = (req, res) => {
 
             storehouse.forEach(account => {
                 const pill_list = account.pill_list;
-                pill_list.push(pill);
+                pill_list.push({ pill: pill._id });
 
                 PillStorehouse.findOneAndUpdate(
                     { _id: account._id },

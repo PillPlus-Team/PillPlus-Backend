@@ -19,7 +19,7 @@ const PrescriptionsSchema = new Schema(
             amount: { type: String, required: true },
             unit: { type: String, required: true }
         }],
-        status: { type: Boolean, default: false, required: true }
+        status: { type: Boolean, default: false, required: true, select: false }
     }, {
         timestamps: false,
         versionKey: false
