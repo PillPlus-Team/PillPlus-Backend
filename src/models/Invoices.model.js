@@ -5,7 +5,7 @@ const ObjectId = Schema.ObjectId;
 
 const invoiceSchema = new Schema(
   {
-    _id: ObjectId,
+    _id: { type: String, default: Date.now },
     prescriptionID: { type: String, required: true, select: false  },
     identificationNumber: { type: String, required: true },
     hn: {
@@ -38,7 +38,7 @@ const invoiceSchema = new Schema(
     paidStatus: { type: Boolean, default: false, required: true, select: false }
   },
   {
-    timestamps: false,
+    timestamps: true,
     versionKey: false,
   }
 );

@@ -3,11 +3,10 @@ const express = require("express");
 const { 
     verifyToken,
     forHospital,
-    forPatient,
     forPillStore
 } = require("../common/middleware");
 
-const controller = require("../controllers/auth.controller");
+const controller = require("../controllers/Auth.controller");
 
 const db = require("../models");
 
@@ -21,9 +20,7 @@ router.post("/login",
         controller.verifyPassword, 
         controller.login(db.user)
 );
-
 router.post("/patient/login", controller.patientLogin);
-
 router.post("/pillStore/login", 
         controller.findByEmail(db.pillStore), 
         controller.verifyPassword, 
@@ -38,26 +35,13 @@ router.use(verifyToken);
 
 // Update profile
 router.put("/updateProfile",
-                forHospital,
-                controller.updateProfile(db.user)
-            );
-
-router.put("/pillStore/updateProfile",
-                forPillStore,
-                controller.updateProfile(db.pillStore)
+                controller.updateProfile
             );
 
 // Reset password
 router.put("/resetPassword",
-                forHospital,
                 controller.handleNewPassword, 
-                controller.resetPassword(db.user)
-            );
-
-router.put("/pillStore/resetPassword",
-                forPillStore,
-                controller.handleNewPassword, 
-                controller.resetPassword(db.pillStore)
+                controller.resetPassword
             );
 
 module.exports = router;
