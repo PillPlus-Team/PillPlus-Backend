@@ -9,7 +9,7 @@ const PillStoreSchema = new Schema(
     _id: ObjectId,
     ID: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    pharmacist: { type: String, required: true },
+    pharmacy: { type: String, required: true },
     location: { type: String, required: true },
     openingData: [
       {
