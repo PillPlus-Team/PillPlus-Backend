@@ -6,7 +6,7 @@ const {
     forPillStore
 } = require("../common/middleware");
 
-const controller = require("../controllers/Auth.controller");
+const controller = require("../controllers/auth.controller");
 
 const db = require("../models");
 
