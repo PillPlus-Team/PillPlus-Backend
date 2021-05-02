@@ -80,7 +80,6 @@ exports.selectPillStore = (req, res) => {
             }
 
             const newInvoice = new Invoice({
-              _id: new db.mongoose.Types.ObjectId(),
               prescriptionID: req.body._id.toString(),
               identificationNumber: docs.identificationNumber,
               hn: docs.hn,

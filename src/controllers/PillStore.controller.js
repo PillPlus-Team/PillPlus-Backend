@@ -27,8 +27,7 @@ exports.CreateID = (req, res, next) => {
 exports.addPillStore = async (req, res) => {
   const pillStore = await new PillStore({
     _id: new db.mongoose.Types.ObjectId(),
-    ...req.body,
-    pillStorehouse_id: "12345",
+    ...req.body
   });
 
   pillStore.save(async (err, pillStore) => {
@@ -62,7 +61,7 @@ exports.addPillStore = async (req, res) => {
           await delete update._doc.pillStorehouse_id;
           await delete update._doc.coordinate;
           await delete update._doc.openingData;
-  
+
           return res.status(200).send(update);
         });
       });
@@ -122,28 +121,34 @@ exports.getAllPillStores = (req, res) => {
 
 // Get available pill stores by pills data
 exports.getAvailablePillStores = (req, res) => {
-  Prescription.findOne({ _id: req.params._id }, (err, inv) => {
-    // const pills = inv.pills;
+  Prescription.findOne({ _id: req.params._id }, (err, doc) => {
+    const pills = doc.pills;
 
-    PillStore.find(
-      {},
-      "-_id",
-      async (err, pillStore) => {
-        if (err) {
-          return res.status(500).send({ message: err });
-        }
+    PillStore.find({}, "-_id +openingStatus +pillStorehouse_id")
+      .then(async pillStores => {
 
-        var allPillStores = [];
-        await pillStore.forEach(async (doc) => {
-          allPillStores.push({
+        // PillStorehouse.find({}).populate("store").populate("pill_list.pill").exec((err, storehouses) => {
+
+        //   for (var p in pills) {
+
+        //     const pillIndex = storehouses.pill_list.findIndex(
+        //       ({ pill }) => pill.sn == p.sn
+        //     );
+        //     storehouses = storehouses.filter(doc => Storehouse.pill_list[pillIndex].amount >= p.amount);
+        //   }
+
+        // })
+
+        var availablePillStores = [];
+        await pillStores.forEach(async (doc) => {
+          availablePillStores.push({
             ...doc._doc,
             status: true,
           });
         });
 
-        return res.status(200).send(allPillStores);
-      }
-    );
+        return res.status(200).send(availablePillStores);
+      })
   });
 };
 

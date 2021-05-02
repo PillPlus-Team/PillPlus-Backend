@@ -9,7 +9,7 @@ const PillStoreSchema = new Schema(
     _id: ObjectId,
     ID: { type: String, required: true, unique: true },
     name: { type: String, required: true },
-    pharmacy: { type: String, required: true },
+    pharmacist: { type: String, required: true },
     location: { type: String, required: true },
     openingData: [
       {
@@ -37,7 +37,8 @@ const PillStoreSchema = new Schema(
       lowercase: true,
       validate: [/^[\w]+[\.\w-]*?@[\w]+(\.[\w]+)+$/, "invalid email"],
     },
-    pillStorehouse_id: { type: String, required: true, select: false },
+    openingStatus: { type: Boolean, default: false, select: false },
+    pillStorehouse_id: { type: String, select: false },
     password: { type: String, required: true, select: false },
     activated: { type: Boolean, default: false, select: false },
   },
