@@ -13,7 +13,6 @@ const invoiceSchema = new Schema(
       required: true,
       validator: [/[0-9]{8,8}/, "invalid HN number"],
     },
-    hospitalNumber: { type: String, required: true, default: "1234567890" },
     name: { type: String, required: true },
     startTime: { type: String, default: Date.now },
     queueNo: { type: String, required: true },
@@ -35,7 +34,8 @@ const invoiceSchema = new Schema(
     ],
     serviceCharge: { type: Number, default: 30, required: true },
     totalPay: { type: Number, default: 30, required: true },
-    paidStatus: { type: Boolean, default: false, required: true, select: false }
+    paidStatus: { type: Boolean, default: false, required: true, select: false },
+    dispenseDate: { type: Date, select: false }
   },
   {
     timestamps: true,
