@@ -49,7 +49,6 @@ function invalidToken(req, res) {
   const errMsg = "INVALID TOKEN";
   const userText = JSON.stringify(req.user);
   const err = `${errMsg} ERROR - user: ${userText}, IP: ${req.ip}`;
-  res.json({ success: false, error: errMsg });
   return res.redirect(401, "/login");
 }
 

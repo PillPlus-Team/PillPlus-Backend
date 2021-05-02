@@ -42,8 +42,7 @@ router.use(
         sameSite: "None",
         maxAge: -1,
       });
-      res.end();
-      return errorRes(res, err, "Login to proceed", 401);
+      res.status(404).end();
     }
     next();
   }

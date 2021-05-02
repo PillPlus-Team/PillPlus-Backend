@@ -2,8 +2,6 @@ const express = require("express");
 
 const { 
     verifyToken,
-    forHospital,
-    forPillStore
 } = require("../common/middleware");
 
 const controller = require("../controllers/auth.controller");

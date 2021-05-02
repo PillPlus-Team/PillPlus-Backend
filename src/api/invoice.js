@@ -4,19 +4,25 @@ const router = express.Router();
 const {
   forStaff,
   forCashier,
-  forPatient
+  forPatient,
+  forPillStore
 } = require("../common/middleware");
 
 const controller = require('../controllers/Invoice.controller');
 
 // ---------------------------- API ---------------------------- //
 
+// ----------------------- For Pill Store ---------------------- //
+router.get("/listCustomers", forPillStore, controller.getListCustomers);
+router.put("/dispensePill/:_id", forPillStore, controller.dispensePill);
+
+// ----------------------- For Patients ------------------------ //
 router.put("/update", forPatient, controller.updateInvoice);
-// For staff
+
+// ------------------------ For Hospital ----------------------- //
 router.post("/selectPillStore", forStaff, controller.createQueue, controller.selectPillStore);
-// For cashier
-router.use(forCashier);
-router.get("/", controller.getAllInvoices); // fetch All data
-router.post("/:_id", controller.invoicePaid);
+
+router.get("/", forCashier, controller.getAllInvoices); // fetch All data
+router.post("/:_id", forCashier, controller.invoicePaid);
 
 module.exports = router;
