@@ -71,7 +71,7 @@ async function createToken(req, res, model) {
 
   return await jwt.sign({ _id, role, mode }, process.env.JWT_SECRET, {
     algorithm: "HS512",
-    expiresIn: "1d",
+    expiresIn: "12h",
   });
 }
 
@@ -102,7 +102,7 @@ exports.patientLogin = (req, res) => {
             process.env.JWT_SECRET,
             {
               algorithm: "HS512",
-              expiresIn: "10m",
+              expiresIn: "12h",
             }
           );
 
