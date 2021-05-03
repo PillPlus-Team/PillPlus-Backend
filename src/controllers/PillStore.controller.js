@@ -120,7 +120,7 @@ exports.getAvailablePillStores = (req, res) => {
 
             console.log(getPillStore)
 
-            if (available && getPillStore.openingStatus) {
+            if (available && getPillStore && getPillStore._doc.openingStatus) {
               availablePillStores.push({
                 ...getPillStore,
                 status: true,
