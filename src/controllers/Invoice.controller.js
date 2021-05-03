@@ -280,8 +280,8 @@ exports.getStatements = (req, res) => {
   Invoice.find({
     "pillStore._id": req.user._id,
     created_at: {
-      $gte: new Timestamp(new Date(req.body.year, req.body.month, 1), 0),
-      $lt: new Timestamp(new Date(req.body.year, req.body.month + 1, 1), 0),
+      $gte: ISODate(`${req.body.year}-${req.body.month}-1`),
+      $lt: ISODate(`${req.body.year}-${req.body.month + 1}-1`),
     },
   })
     .populate("pillStore")
