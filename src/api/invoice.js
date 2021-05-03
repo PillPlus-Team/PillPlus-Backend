@@ -21,6 +21,7 @@ router.get("/statements", forPillStore, controller.getStatements);
 router.put("/update", forPatient, controller.updateInvoice);
 
 // ------------------------ For Hospital ----------------------- //
+router.get("/pillStoreStatements", forStaff, controller.getAllStatements);
 router.post(
   "/selectPillStore",
   forStaff,
