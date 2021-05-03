@@ -5,6 +5,10 @@ const QueueSchema = new Schema(
     {
         name: String,
         count: Number
+    },
+    {
+        timestamps: true,
+        versionKey: false,
     }
 )
 

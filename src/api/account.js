@@ -24,9 +24,10 @@ const User = require("../models").user;
 
 // ---------------------------- API ---------------------------- //
 
+router.get("/all", getAllAccounts); // fetch All data 
+
 router.use(onlyAdmin);
 
-router.get("/all", getAllAccounts); // fetch All data
 router.post("/", 
             checkDuplicateEmailOrPhone(db.user), 
             handlePassword,

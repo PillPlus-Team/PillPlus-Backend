@@ -44,7 +44,7 @@ function initial() {
     ID.estimatedDocumentCount((err, count) => {
         if (!err && count === 0) {
             new ID({
-                count: 0
+                name: "PS", count: 0
             }).save(err => {
                 if (err) {
                     console.log(err);
