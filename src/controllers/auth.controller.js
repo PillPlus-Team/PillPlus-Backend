@@ -60,7 +60,7 @@ exports.login = (model) => {
         ...req.body,
       });
     } catch (err) {
-      return res.status(500).send({ message: "Login failed!" });
+      return res.status(403).send({ message: "Login failed!" });
     }
   };
 };
@@ -91,7 +91,9 @@ exports.patientLogin = (req, res) => {
         }
 
         if (!inv) {
-          return res.status(500).send({ message: "Cannot find this invoice!!!"});
+          return res
+            .status(500)
+            .send({ message: "Cannot find this invoice!!!" });
         }
 
         if (req.body.identificationNumber == inv.identificationNumber) {
@@ -116,8 +118,7 @@ exports.patientLogin = (req, res) => {
             { _id: inv.pillStore._id },
             "+openingStatus",
             (err, pillStore) => {
-              if (err)
-                return res.status(500).send({ message: err });
+              if (err) return res.status(500).send({ message: err });
 
               inv.pillStore = pillStore;
               return res.status(200).send(inv);
@@ -125,12 +126,12 @@ exports.patientLogin = (req, res) => {
           );
         } else {
           return res
-            .status(500)
+            .status(403)
             .send({ message: "Cannot get data by this ID!" });
         }
       });
   } catch (err) {
-    return res.status(500).send({ message: "Cannot get data by this ID!" });
+    return res.status(403).send({ message: "Cannot get data by this ID!" });
   }
 };
 
