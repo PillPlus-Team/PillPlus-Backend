@@ -1,5 +1,3 @@
-const { get } = require("mongoose");
-const { pill } = require("../models");
 const db = require("../models");
 const ID = db.id;
 const Pill = db.pill;
@@ -201,11 +199,12 @@ exports.deletePillStore = (req, res) => {
 
       PillStorehouse.deleteOne({
         store: req.params._id,
-      }).catch((err) => {
+      }).then(() => {
+        return res.status(200).send({ message: "Deleted pill store account!" });
+      })
+      .catch((err) => {
         return res.status(500).send({ message: err });
       });
-
-      return res.status(200).send({ message: "Deleted pill store account!" });
     }
   );
 };
