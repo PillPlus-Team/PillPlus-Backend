@@ -278,14 +278,10 @@ exports.getAllStatements = (req, res) => {};
 
 exports.getStatements = (req, res) => {
   Invoice.find({
-    "pillStore._id": req.user._id,
-    updatedAt: {
-      $gte: `${req.body.year}-${
-        req.body.month < 10 ? "0" + req.body.month : req.body.month
-      }-01`,
-      $lt: `${req.body.year}-${
-        req.body.month < 10 ? "0" + (req.body.month + 1) : req.body.month + 1
-      }-01`,
+    pillStore: req.user._id,
+    dispenseDate: {
+      $gte: new Date(req.body.year, req.body.month, 1),
+      $lt: new Date(req.body.year, req.body.month + 1, 1),
     },
   })
     .populate("pillStore")
