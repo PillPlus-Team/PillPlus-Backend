@@ -15,7 +15,7 @@ const controller = require("../controllers/Invoice.controller");
 // ----------------------- For Pill Store ---------------------- //
 router.get("/listCustomers", forPillStore, controller.getListCustomers);
 router.put("/dispensePill/:_id", forPillStore, controller.dispensePill);
-router.get("/statement", forPillStore, controller.getStatement);
+router.get("/statement", forPillStore, controller.getStatements);
 
 // ----------------------- For Patients ------------------------ //
 router.put("/update", forPatient, controller.updateInvoice);
