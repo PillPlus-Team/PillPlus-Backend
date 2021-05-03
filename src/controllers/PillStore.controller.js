@@ -87,49 +87,54 @@ exports.getAvailablePillStores = (req, res) => {
   Prescription.findOne({ _id: req.params._id }, "+pills._id", (err, doc) => {
     var pills = doc.pills;
     var availablePillStores = [];
-    PillStore.find({ ID: { $ne : "PS1000" } }, "-_id +openingStatus +pillStorehouse_id").then(
-      async (pillStores) => {
-        PillStorehouse.find({})
-          .populate("store")
-          .populate("pill_list.pill")
-          .exec((err, storehouses) => {
-            if (err)
-              return res
-                .status(500)
-                .send({ message: "Cannot get available pill store!!" });
-            for (store of storehouses) {
-              let available = true;
-              for (let pill of pills) {
-                const store_available = store.pill_list.find(
-                  (pill_store) =>
-                    toString(pill_store._id) === toString(pill._id) &&
-                    pill_store.amount >= pill.amount
-                );
-                if (!store_available) {
-                  available = false;
-                  break;
-                }
-              }
-              const getPillStore = pillStores.find(
-                ({ pillStorehouse_id }) => pillStorehouse_id == store._id
-              )._doc;
-              if (available && getPillStore.openingStatus) {
-                availablePillStores.push({
-                  ...getPillStore,
-                  status: true,
-                });
-              } else {
-                availablePillStores.push({
-                  ...getPillStore,
-                  status: false,
-                });
+    PillStore.find(
+      { ID: { $ne: "PS1000" } },
+      "-_id -avatarUri +openingStatus +pillStorehouse_id -createdAt -updatedAt"
+    ).then(async (pillStores) => {
+      PillStorehouse.find({})
+        .populate("store")
+        .populate("pill_list.pill")
+        .exec((err, storehouses) => {
+          if (err)
+            return res
+              .status(500)
+              .send({ message: "Cannot get available pill store!!" });
+          storehouses.shift();
+          for (store of storehouses) {
+            let available = true;
+            for (let pill of pills) {
+              const store_available = store.pill_list.find(
+                (pill_store) =>
+                  toString(pill_store._id) === toString(pill._id) &&
+                  pill_store.amount >= pill.amount
+              );
+              if (!store_available) {
+                available = false;
+                break;
               }
             }
 
-            return res.status(200).send(availablePillStores);
-          });
-      }
-    );
+            const getPillStore = pillStores.find(
+              ({ pillStorehouse_id }) => pillStorehouse_id == store._id
+            )._doc;
+
+            delete getPillStore.pillStorehouse_id;
+            if (available && getPillStore.openingStatus && getPillStore.activated) {
+              availablePillStores.push({
+                ...getPillStore,
+                status: true,
+              });
+            } else {
+              availablePillStores.push({
+                ...getPillStore,
+                status: false,
+              });
+            }
+          }
+
+          return res.status(200).send(availablePillStores);
+        });
+    });
   });
 };
 

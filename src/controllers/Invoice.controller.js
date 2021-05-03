@@ -91,16 +91,29 @@ exports.selectPillStore = (req, res) => {
                   .status(500)
                   .send({ message: "Cannot select this pill store!!" });
 
+              var pillCost = [];
+              const serviceCharge = 50;
+              var totalPay = serviceCharge;
+
               prescription.pills.forEach((doc) => {
                 const pillIndex = storehouse.pill_list.findIndex(
                   ({ pill }) => pill.sn == doc.sn
                 );
 
+                var totalPrice = 0;
                 if (pillIndex !== -1) {
                   storehouse.pill_list[pillIndex].amount -= doc.amount;
+                  totalPrice = storehouse.pill_list[pillIndex].pill.price * doc.amount;
+                  totalPay += totalPrice;
                 } else {
                   return res.status(500).send({ message: "pill not found!" });
                 }
+  
+                pillCost.push({
+                  ...doc._doc,
+                  totalPrice
+                });
+
               });
 
               Prescription.findOneAndUpdate(
@@ -125,7 +138,9 @@ exports.selectPillStore = (req, res) => {
                       queueNo: prescription.queueNo,
                       doctor: prescription.doctor,
                       pillStore: pillStore,
-                      pills: prescription.pills,
+                      pills: pillCost,
+                      totalPay,
+                      serviceCharge,
                     });
 
                     newInvoice.save(async (err, newInvoice) => {
