@@ -8,17 +8,15 @@ const PillStorehouse = db.pillStorehouse;
 
 // Add pill store
 exports.CreateID = (req, res, next) => {
-  ID.findOne({}, async (err, id) => {
-    let count = id.count + 1;
-
-    await ID.findOneAndUpdate({ _id: id._id }, { count: count });
-
-    let stringID = count.toString();
-    for (var i = 0; i < 8 - stringID.length; i++) {
+  ID.findOne({ name: "PS" }, async (err, id) => {
+    let stringID = id.count.toString();
+    for (var i = 0; i < 4 - stringID.length; i++) {
       stringID = "0" + stringID;
     }
+    req.body.ID = id.name + "1" + stringID;
 
-    req.body.ID = "PS100" + stringID;
+    let count = id.count + 1;
+    await ID.findOneAndUpdate({ _id: id._id }, { count: count });
 
     next();
   });
@@ -89,7 +87,7 @@ exports.getAvailablePillStores = (req, res) => {
   Prescription.findOne({ _id: req.params._id }, "+pills._id", (err, doc) => {
     var pills = doc.pills;
     var availablePillStores = [];
-    PillStore.find({}, "-_id +openingStatus +pillStorehouse_id").then(
+    PillStore.find({ ID: { $ne : "PS1000" } }, "-_id +openingStatus +pillStorehouse_id").then(
       async (pillStores) => {
         PillStorehouse.find({})
           .populate("store")

@@ -2,7 +2,7 @@ const db = require("../models");
 const PillStorehouse = db.pillStorehouse;
 
 exports.updatePillStorehouse = (req, res) => {
-  PillStorehouse.findOne({ _id: req.params._id }, " -__v -createdAt -updatedAt")
+  PillStorehouse.findOne({ store: req.user._id }, " -__v -createdAt -updatedAt")
     .populate("store", "-createdAt -updatedAt")
     .populate("pill_list.pill")
     .exec((err, Storehouse) => {
