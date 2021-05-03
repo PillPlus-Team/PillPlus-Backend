@@ -290,6 +290,6 @@ exports.getStatements = (req, res) => {
         return res
           .status(500)
           .send({ message: "can't get Invoice by this ID!" });
-      console.log(invoice);
+      return res.status(200).send(invoice);
     });
 };
