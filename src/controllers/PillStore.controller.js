@@ -27,7 +27,7 @@ exports.CreateID = (req, res, next) => {
 exports.addPillStore = async (req, res) => {
   const pillStore = await new PillStore({
     _id: new db.mongoose.Types.ObjectId(),
-    ...req.body
+    ...req.body,
   });
 
   pillStore.save(async (err, pillStore) => {
@@ -121,34 +121,52 @@ exports.getAllPillStores = (req, res) => {
 
 // Get available pill stores by pills data
 exports.getAvailablePillStores = (req, res) => {
-  Prescription.findOne({ _id: req.params._id }, (err, doc) => {
-    const pills = doc.pills;
+  Prescription.findOne({ _id: req.params._id }, "+pills._id", (err, doc) => {
+    var pills = doc.pills;
+    var availablePillStores = [];
+    PillStore.find({}, "-_id +openingStatus +pillStorehouse_id").then(
+      async (pillStores) => {
+        PillStorehouse.find({})
+          .populate("store")
+          .populate("pill_list.pill")
+          .exec((err, storehouses) => {
+            if (err)
+              return res
+                .status(500)
+                .send({ message: "Cannot get available pill store!!" });
+            for (store of storehouses) {
+              let available = true;
+              for (let pill of pills) {
+                const store_available = store.pill_list.find(
+                  (pill_store) =>
+                    toString(pill_store._id) === toString(pill._id) &&
+                    pill_store.amount >= pill.amount
+                );
+                if (!store_available) {
+                  available = false;
+                  break;
+                }
+              }
+              const getPillStore = pillStores.find(
+                ({ pillStorehouse_id }) => pillStorehouse_id == store._id
+              )._doc;
+              if (available) {
+                availablePillStores.push({
+                  ...getPillStore,
+                  status: true,
+                });
+              } else {
+                availablePillStores.push({
+                  ...getPillStore,
+                  status: false,
+                });
+              }
+            }
 
-    PillStore.find({}, "-_id +openingStatus +pillStorehouse_id")
-      .then(async pillStores => {
-
-        // PillStorehouse.find({}).populate("store").populate("pill_list.pill").exec((err, storehouses) => {
-
-        //   for (var p in pills) {
-
-        //     const pillIndex = storehouses.pill_list.findIndex(
-        //       ({ pill }) => pill.sn == p.sn
-        //     );
-        //     storehouses = storehouses.filter(doc => Storehouse.pill_list[pillIndex].amount >= p.amount);
-        //   }
-
-        // })
-
-        var availablePillStores = [];
-        await pillStores.forEach(async (doc) => {
-          availablePillStores.push({
-            ...doc._doc,
-            status: true,
+            return res.status(200).send(availablePillStores);
           });
-        });
-
-        return res.status(200).send(availablePillStores);
-      })
+      }
+    );
   });
 };
 

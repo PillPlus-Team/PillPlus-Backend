@@ -2,15 +2,11 @@ const db = require("../models");
 const PillStorehouse = db.pillStorehouse;
 
 exports.updatePillStorehouse = (req, res) => {
-  PillStorehouse.findOne(
-    { _id: req.params._id },
-    "-pill_list._id -__v -createdAt -updatedAt"
-  )
+  PillStorehouse.findOne({ _id: req.params._id }, " -__v -createdAt -updatedAt")
     .populate("store", "-createdAt -updatedAt")
     .populate("pill_list.pill")
     .exec((err, Storehouse) => {
       if (err) return res.status(500).send({ message: "Cannot update!!" });
-
       const pillIndex = Storehouse.pill_list.findIndex(
         ({ pill }) => pill._id == req.body.pill_id
       );
