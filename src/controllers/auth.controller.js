@@ -90,6 +90,10 @@ exports.patientLogin = (req, res) => {
           return res.status(500).send({ message: err });
         }
 
+        if (!inv) {
+          return res.status(500).send({ message: "Cannot find this invoice!!!"});
+        }
+
         if (req.body.identificationNumber == inv.identificationNumber) {
           var token = await jwt.sign(
             { _id: inv._id, mode: "PATIENT" },
