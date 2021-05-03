@@ -278,8 +278,8 @@ exports.getAllStatements = (req, res) => {};
 
 exports.getStatements = (req, res) => {
   Invoice.find({
-    "pillStore._id": req.user._id,
-    updateAt: {
+    pillStore: req.user._id,
+    updatedAt: {
       $gte: new Date(req.body.year, req.body.month, 1),
       $lt: new Date(req.body.year, req.body.month + 1, 1),
     },
@@ -290,6 +290,7 @@ exports.getStatements = (req, res) => {
         return res
           .status(500)
           .send({ message: "can't get Invoice by this ID!" });
+      console.log(invoice)
       return res.status(200).send(invoice);
     });
 };
