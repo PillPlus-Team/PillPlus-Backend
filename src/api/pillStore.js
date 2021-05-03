@@ -16,11 +16,11 @@ const controller = require('../controllers/PillStore.controller');
 
 // ---------------------------- API ---------------------------- //
 
+router.get("/all", controller.getAllPillStores); // fetch All data
 router.get("/available/:_id", controller.getAvailablePillStores);
 
 router.use(onlyAdmin);
 
-router.get("/all", controller.getAllPillStores); // fetch All data
 router.post("/", 
             checkDuplicateEmailOrPhone(db.pillStore), 
             handlePassword,

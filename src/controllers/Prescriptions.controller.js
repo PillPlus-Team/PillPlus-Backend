@@ -10,10 +10,16 @@ exports.createQueue = async (req, res, next) => {
         if (!queue) {
             return res.status(500).send({ message: "Cannot create queue for this prescription!!"});
         }
+        const today = new Date();
+
+        if (queue.updatedAt < new Date(today.getFullYear(), today.getMonth(), today.getDate()))
+            queue.count = 0;
 
         let count = queue.count + 1;
 
-        Queue.findOneAndUpdate({ _id: queue._id }, { count: count });
+        Queue.findOneAndUpdate({ _id: queue._id }, { count: count },(err, queue) => {
+            console.log(queue.count)
+        });
 
         let stringQueue = (count + 50000).toString();
 

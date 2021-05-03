@@ -48,7 +48,7 @@ const PillStoreSchema = new Schema(
     activated: { type: Boolean, default: false },
   },
   {
-    timestamps: false,
+    timestamps: true,
     versionKey: false,
   }
 );
