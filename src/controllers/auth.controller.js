@@ -47,13 +47,13 @@ exports.login = (model) => {
 
       var token = await createToken(req, res, model);
 
-      //res.cookie("cookieToken", token, { httpOnly: true });
-      res.cookie("cookieToken", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-        maxAge: 12 * 60 * 60 * 1000,
-      }); // add secure: true for production
+      res.cookie("cookieToken", token, { httpOnly: true });
+      // res.cookie("cookieToken", token, {
+      //   httpOnly: true,
+      //   secure: true,
+      //   sameSite: "None",
+      //   maxAge: 12 * 60 * 60 * 1000,
+      // }); // add secure: true for production
 
       await delete req.body._id;
       return res.status(200).send({
@@ -80,7 +80,10 @@ const Invoice = db.invoice;
 
 exports.patientLogin = (req, res) => {
   try {
-    Invoice.findOne({ _id: req.body._id }, "+prescriptionID -createdAt -updatedAt")
+    Invoice.findOne(
+      { _id: req.body._id },
+      "+prescriptionID -createdAt -updatedAt"
+    )
       .populate("pillStore")
       .exec(async (err, inv) => {
         if (err) {
@@ -97,13 +100,13 @@ exports.patientLogin = (req, res) => {
             }
           );
 
-          //res.cookie("cookieToken", token, { httpOnly: true });
-          res.cookie("cookieToken", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "None",
-            maxAge: 10 * 60 * 1000,
-          }); // add secure: true for production
+          res.cookie("cookieToken", token, { httpOnly: true });
+          // res.cookie("cookieToken", token, {
+          //   httpOnly: true,
+          //   secure: true,
+          //   sameSite: "None",
+          //   maxAge: 10 * 60 * 1000,
+          // }); // add secure: true for production
 
           PillStore.findOne(
             { _id: inv.pillStore._id },
