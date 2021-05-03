@@ -274,4 +274,22 @@ exports.dispensePill = (req, res) => {
 };
 
 // Statements
-exports.getStatements = (req, res) => {};
+exports.getAllStatements = (req, res) => {};
+
+exports.getStatements = (req, res) => {
+  Invoice.find({
+    "pillStore._id": req.user._id,
+    created_at: {
+      $gte: new Timestamp(new Date(req.body.year, req.body.month, 1), 0),
+      $lt: new Timestamp(new Date(req.body.year, req.body.month + 1, 1), 0),
+    },
+  })
+    .populate("pillStore")
+    .exec((err, invoice) => {
+      if (err)
+        return res
+          .status(500)
+          .send({ message: "can't get Invoice by this ID!" });
+      console.log(invoice);
+    });
+};
