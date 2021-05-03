@@ -27,16 +27,14 @@ exports.getPillStorehouse = (req, res) => {
   console.log(req.user)
   PillStorehouse.findOne(
     { store: req.user._id },
-    "-pill_list._id -createdAt -updatedAt"
+    "-createdAt -updatedAt -store"
   )
-    .populate("store")
     .populate("pill_list.pill")
     .exec((err, Storehouse) => {
       if (err)
         return res
           .status(500)
           .send({ message: "Cannot get PillStoreHouse !!" });
-      console.log(Storehouse);
-      res.status(200).send(Storehouse.pill_list);
+      res.status(200).send(Storehouse);
     });
 };
