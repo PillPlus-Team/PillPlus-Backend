@@ -275,6 +275,7 @@ exports.dispensePill = (req, res) => {
 
 // Statements
 exports.getAllStatements = (req, res) => {
+  let invoiceList = {};
   Invoice.find({
     dispenseDate: {
       $gte: new Date(req.body.year, req.body.month, 1),
@@ -287,6 +288,7 @@ exports.getAllStatements = (req, res) => {
         return res
           .status(500)
           .send({ message: "can't get Invoice by this ID!" });
+
       return res.status(200).send(invoice);
     });
 };
