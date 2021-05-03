@@ -21,7 +21,13 @@ app.use(
 );
 
 const corsOptions = {
-  origin: process.env.ORIGIN_CORS,
+  origin: [
+    `${process.env.ORIGIN_CORS}`,
+    "https://hospital.pillplus.store",
+    "https://phamarcy.pillplus.store",
+    "https://pillplus.store",
+    "https://www.pillplus.store",
+  ],
   credentials: true,
 };
 
