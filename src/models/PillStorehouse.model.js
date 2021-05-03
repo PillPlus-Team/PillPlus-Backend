@@ -5,7 +5,7 @@ const ObjectId = Schema.ObjectId;
 
 const PillStorehouseSchema = new Schema(
     {
-        _id: { type: ObjectId, select: false },
+        _id: { type: ObjectId},
         store: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "PillStore"

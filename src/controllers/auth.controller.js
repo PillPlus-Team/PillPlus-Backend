@@ -47,6 +47,7 @@ exports.login = (model) => {
 
       var token = await createToken(req, res, model);
 
+      // res.cookie("cookieToken", token, { httpOnly: true });
       res.cookie("cookieToken", token, {
         httpOnly: true,
         sameSite: "None",
@@ -78,7 +79,10 @@ const Invoice = db.invoice;
 
 exports.patientLogin = (req, res) => {
   try {
-    Invoice.findOne({ _id: req.body._id }, "+prescriptionID -createdAt -updatedAt")
+    Invoice.findOne(
+      { _id: req.body._id },
+      "+prescriptionID -createdAt -updatedAt"
+    )
       .populate("pillStore")
       .exec(async (err, inv) => {
         if (err) {
@@ -95,6 +99,7 @@ exports.patientLogin = (req, res) => {
             }
           );
 
+          // res.cookie("cookieToken", token, { httpOnly: true });
           res.cookie("cookieToken", token, {
             httpOnly: true,
             sameSite: "None",
