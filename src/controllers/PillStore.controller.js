@@ -113,6 +113,21 @@ exports.getAvailablePillStores = (req, res) => {
                 break;
               }
             }
+            const getPillStore = pillStores.find(
+              ({ pillStorehouse_id }) => pillStorehouse_id == store._id
+            );
+            if (available && getPillStore.openingStatus) {
+              availablePillStores.push({
+                ...getPillStore._doc,
+                status: true,
+              });
+            } else {
+              availablePillStores.push({
+                ...getPillStore._doc,
+                status: false,
+              });
+            }
+          }
 
             const getPillStore = pillStores.find(
               ({ pillStorehouse_id }) => pillStorehouse_id == store._id
@@ -131,7 +146,6 @@ exports.getAvailablePillStores = (req, res) => {
               });
             }
           }
-
           return res.status(200).send(availablePillStores);
         });
     });

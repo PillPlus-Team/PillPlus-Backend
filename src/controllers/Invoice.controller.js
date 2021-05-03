@@ -16,9 +16,12 @@ exports.createQueue = (req, res, next) => {
 
     const today = new Date();
 
-    if (queue.updatedAt < new Date(today.getFullYear(), today.getMonth(), today.getDate()))
-        queue.count = 0;
-        
+    if (
+      queue.updatedAt <
+      new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    )
+      queue.count = 0;
+
     let count = queue.count + 1;
 
     Queue.findOneAndUpdate(
@@ -36,7 +39,7 @@ exports.createQueue = (req, res, next) => {
 // Get all invoice
 exports.getAllInvoices = (req, res) => {
   Invoice.find({ paidStatus: false }, "-createdAt -updatedAt")
-    .populate("pillStore", "-_id -activated -createdAt -updatedAt -avatarUri")
+    .populate("pillStore", "-_id")
     .exec((err, docs) => {
       if (err) {
         return res.status(500).send({ message: err });
@@ -295,6 +298,7 @@ exports.dispensePill = (req, res) => {
 
 // Statements
 exports.getAllStatements = (req, res) => {
+  let invoiceList = {};
   Invoice.find({
     dispenseDate: {
       $gte: new Date(req.body.year, req.body.month, 1),
@@ -307,6 +311,7 @@ exports.getAllStatements = (req, res) => {
         return res
           .status(500)
           .send({ message: "can't get Invoice by this ID!" });
+
       return res.status(200).send(invoice);
     });
 };
