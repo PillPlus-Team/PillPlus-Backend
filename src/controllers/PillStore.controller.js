@@ -85,6 +85,14 @@ exports.getAllPillStores = (req, res) => {
 // Get available pill stores by pills data
 exports.getAvailablePillStores = (req, res) => {
   Prescription.findOne({ _id: req.params._id }, "+pills._id", (err, doc) => {
+    if (err) {
+      return res.status(500).send({ message: err });
+    }
+
+    if (!doc) {
+      return res.status(500).send({ message: "Cannot found"});
+    }
+
     var pills = doc.pills;
     var availablePillStores = [];
     PillStore.find(
@@ -114,6 +122,8 @@ exports.getAvailablePillStores = (req, res) => {
                 break;
               }
             }
+
+            console.log(store)
             const getPillStore = pillStores.find(
               ({ pillStorehouse_id }) => pillStorehouse_id == store._id
             );
