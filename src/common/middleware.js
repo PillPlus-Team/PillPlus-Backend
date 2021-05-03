@@ -49,7 +49,7 @@ function invalidToken(req, res) {
   const errMsg = "INVALID TOKEN";
   const userText = JSON.stringify(req.user);
   const err = `${errMsg} ERROR - user: ${userText}, IP: ${req.ip}`;
-  return res.redirect(401, "/login");
+  return res.writeHead(302, {location: '/login'});
 }
 
 function verifyToken(req, res, next) {

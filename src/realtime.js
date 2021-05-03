@@ -3,7 +3,11 @@ const { instrument } = require("@socket.io/admin-ui");
 
 const io = require("socket.io")(process.env.SOCKET_PORT, {
   cors: {
-    origin: [ `${process.env.ORIGIN_CORS}`, "https://admin.pillplus.store"],
+    origin: [
+      `${process.env.ORIGIN_CORS}`,
+      "https://admin.pillplus.store",
+      "https://hospital.pillplus.store",
+    ],
     methods: ["GET", "POST"],
   },
 });
