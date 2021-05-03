@@ -14,6 +14,14 @@ exports.createQueue = (req, res, next) => {
         .send({ message: "Cannot create queue for this invoice!!" });
     }
 
+    const today = new Date();
+
+    if (
+      queue.updatedAt <
+      new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    )
+      queue.count = 0;
+
     let count = queue.count + 1;
 
     Queue.findOneAndUpdate(
@@ -248,7 +256,7 @@ exports.updateInvoice = (req, res) => {
 exports.getListCustomers = (req, res) => {
   Invoice.find(
     { pillStore: req.user._id, paidStatus: true },
-    "-createdAt -updatedAt -pillStore -serviceCharge -totalPay -hn -pills.totalPrice +dispenseDate"
+    "-createdAt -updatedAt -pillStore -serviceCharge -totalPay -hn +dispenseDate"
   )
     .then((invoices) => {
       invoices = invoices.filter((invoice) => !invoice.dispenseDate);
