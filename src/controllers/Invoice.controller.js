@@ -51,7 +51,7 @@ exports.invoicePaid = (req, res) => {
         return res.status(500).send({ message: err });
       }
 
-      return res.status(200).send({ message: "Paid successfully!" });
+      return res.status(200).send(invoice);
     }
   );
 };
@@ -73,74 +73,72 @@ exports.selectPillStore = (req, res) => {
           return res.status(500).send({ message: "Cannot found pill store!!" });
         }
 
-        Prescription.findOne(
-          { _id: req.body._id },
-          (err, prescription) => {
-            if (err) {
-              return res.status(500).send({ message: err });
-            }
+        Prescription.findOne({ _id: req.body._id }, (err, prescription) => {
+          if (err) {
+            return res.status(500).send({ message: err });
+          }
 
-            PillStorehouse.findOne({ _id: pillStore.pillStorehouse_id }, "+_id")
-              .populate("pill_list.pill")
-              .exec((err, storehouse) => {
-                if (err)
-                  return res
-                    .status(500)
-                    .send({ message: "Cannot select this pill store!!" });
+          PillStorehouse.findOne({ _id: pillStore.pillStorehouse_id }, "+_id")
+            .populate("pill_list.pill")
+            .exec((err, storehouse) => {
+              if (err)
+                return res
+                  .status(500)
+                  .send({ message: "Cannot select this pill store!!" });
 
-                prescription.pills.forEach((doc) => {
-                  const pillIndex = storehouse.pill_list.findIndex(
-                    ({ pill }) => pill.sn == doc.sn
-                  );
+              prescription.pills.forEach((doc) => {
+                const pillIndex = storehouse.pill_list.findIndex(
+                  ({ pill }) => pill.sn == doc.sn
+                );
 
-                  if (pillIndex !== -1) {
-                    storehouse.pill_list[pillIndex].amount -= doc.amount;
-                  } else {
-                    return res.status(500).send({ message: "pill not found!" });
+                if (pillIndex !== -1) {
+                  storehouse.pill_list[pillIndex].amount -= doc.amount;
+                } else {
+                  return res.status(500).send({ message: "pill not found!" });
+                }
+              });
+
+              Prescription.findOneAndUpdate(
+                { _id: req.body._id },
+                { status: true },
+                (err, prescription) => {
+                  if (err) {
+                    return res.status(500).send({ message: err });
                   }
-                });
 
-                Prescription.findOneAndUpdate(
-                  { _id: req.body._id },
-                  { status: true },
-                  (err, prescription) => {
-                    if (err) {
-                      return res.status(500).send({ message: err });
-                    }
+                  storehouse.save((err, storehouse) => {
+                    if (err)
+                      return res
+                        .status(500)
+                        .send({ message: "Cannot select this pill store!!" });
 
-                    storehouse.save((err, storehouse) => {
-                      if (err)
-                        return res
-                          .status(500)
-                          .send({ message: "Cannot select this pill store!!" });
+                    const newInvoice = new Invoice({
+                      prescriptionID: req.body._id.toString(),
+                      identificationNumber: prescription.identificationNumber,
+                      hn: prescription.hn,
+                      name: prescription.name,
+                      queueNo: prescription.queueNo,
+                      doctor: prescription.doctor,
+                      pillStore: pillStore,
+                      pills: prescription.pills,
+                    });
 
-                      const newInvoice = new Invoice({
-                        prescriptionID: req.body._id.toString(),
-                        identificationNumber: prescription.identificationNumber,
-                        hn: prescription.hn,
-                        name: prescription.name,
-                        queueNo: prescription.queueNo,
-                        doctor: prescription.doctor,
-                        pillStore: pillStore,
-                        pills: prescription.pills,
-                      });
+                    newInvoice.save(async (err, newInvoice) => {
+                      if (err) {
+                        return res.status(500).send({ message: err });
+                      }
 
-                      newInvoice.save(async (err, newInvoice) => {
-                        if (err) {
-                          return res.status(500).send({ message: err });
-                        }
+                      await delete newInvoice._doc.paidStatus;
+                      await delete newInvoice._doc.createdAt;
+                      await delete newInvoice._doc.updatedAt;
 
-                        await delete newInvoice._doc.paidStatus;
-                        await delete newInvoice._doc.createdAt;
-                        await delete newInvoice._doc.updatedAt;
-
-                        return res.status(200).send(newInvoice);
-                      });
+                      return res.status(200).send(newInvoice);
                     });
                   });
-              });
-          }
-        );
+                }
+              );
+            });
+        });
       }
     );
   } catch (err) {
@@ -253,7 +251,7 @@ exports.getListCustomers = (req, res) => {
     "-createdAt -updatedAt -pillStore -serviceCharge -totalPay -hn -pills.totalPrice +dispenseDate"
   )
     .then((invoices) => {
-      invoices = invoices.filter(invoice => !invoice.dispenseDate);
+      invoices = invoices.filter((invoice) => !invoice.dispenseDate);
       return res.status(200).send(invoices);
     })
     .catch((err) => {
@@ -262,20 +260,18 @@ exports.getListCustomers = (req, res) => {
 };
 
 exports.dispensePill = (req, res) => {
-    Invoice.findOne({ _id: req.params._id })
-    .then(invoice => {
-        invoice.dispenseDate = new Date();
-        invoice.save().then(() => {
-            return res.status(200).send({ message: "Dispensed pill successful!!" });
-        });
+  Invoice.findOne({ _id: req.params._id })
+    .then((invoice) => {
+      invoice.dispenseDate = new Date();
+      invoice.save().then(() => {
+        return res.status(200).send({ message: "Dispensed pill successful!!" });
+      });
     })
-    .catch(err => {
-        console.log(err)
-        return res.status(500).send({ message: err });
-    })
-}
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).send({ message: err });
+    });
+};
 
 // Statements
-exports.getStatements = (req, res) => {
-    
-}
+exports.getStatements = (req, res) => {};
