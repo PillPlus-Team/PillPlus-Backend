@@ -128,18 +128,16 @@ exports.getAvailablePillStores = (req, res) => {
               ({ pillStorehouse_id }) => pillStorehouse_id == store._id
             )._doc;
 
-            if (getPillStore) {
-              if (available && getPillStore.activated && getPillStore.openingStatus) {
-                availablePillStores.push({
-                  ...getPillStore,
-                  status: true,
-                });
-              } else {
-                availablePillStores.push({
-                  ...getPillStore,
-                  status: false,
-                });
-              }
+            if (available && getPillStore.activated && getPillStore.openingStatus) {
+              availablePillStores.push({
+                ...getPillStore,
+                status: true,
+              });
+            } else {
+              availablePillStores.push({
+                ...getPillStore,
+                status: false,
+              });
             }
           }
         
