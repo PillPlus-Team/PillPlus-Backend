@@ -24,8 +24,9 @@ exports.updatePillStorehouse = (req, res) => {
 };
 
 exports.getPillStorehouse = (req, res) => {
+  console.log(req.user)
   PillStorehouse.findOne(
-    { _id: req.params._id },
+    { store: req.user._id },
     "-pill_list._id -createdAt -updatedAt"
   )
     .populate("store")
@@ -36,6 +37,6 @@ exports.getPillStorehouse = (req, res) => {
           .status(500)
           .send({ message: "Cannot get PillStoreHouse !!" });
       console.log(Storehouse);
-      res.status(200).send(Storehouse);
+      res.status(200).send(Storehouse.pill_list);
     });
 };

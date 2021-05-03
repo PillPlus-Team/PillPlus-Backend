@@ -30,7 +30,7 @@ exports.createQueue = (req, res, next) => {
 
 // Get all invoice
 exports.getAllInvoices = (req, res) => {
-  Invoice.find({})
+  Invoice.find({ paidStatus: false }, "-createdAt -updatedAt")
     .populate("pillStore", "-_id")
     .exec((err, docs) => {
       if (err) {
@@ -73,9 +73,8 @@ exports.selectPillStore = (req, res) => {
           return res.status(500).send({ message: "Cannot found pill store!!" });
         }
 
-        Prescription.findOneAndUpdate(
+        Prescription.findOne(
           { _id: req.body._id },
-          { status: true },
           (err, prescription) => {
             if (err) {
               return res.status(500).send({ message: err });
@@ -101,35 +100,44 @@ exports.selectPillStore = (req, res) => {
                   }
                 });
 
-                storehouse.save((err, storehouse) => {
-                  if (err)
-                    return res
-                      .status(500)
-                      .send({ message: "Cannot select this pill store!!" });
-
-                  const newInvoice = new Invoice({
-                    prescriptionID: req.body._id.toString(),
-                    identificationNumber: prescription.identificationNumber,
-                    hn: prescription.hn,
-                    name: prescription.name,
-                    queueNo: prescription.queueNo,
-                    doctor: prescription.doctor,
-                    pillStore: pillStore,
-                    pills: prescription.pills,
-                  });
-
-                  newInvoice.save(async (err, newInvoice) => {
+                Prescription.findOneAndUpdate(
+                  { _id: req.body._id },
+                  { status: true },
+                  (err, prescription) => {
                     if (err) {
                       return res.status(500).send({ message: err });
                     }
 
-                    await delete newInvoice._doc.paidStatus;
-                    await delete newInvoice._doc.createdAt;
-                    await delete newInvoice._doc.updatedAt;
+                    storehouse.save((err, storehouse) => {
+                      if (err)
+                        return res
+                          .status(500)
+                          .send({ message: "Cannot select this pill store!!" });
 
-                    return res.status(200).send(newInvoice);
+                      const newInvoice = new Invoice({
+                        prescriptionID: req.body._id.toString(),
+                        identificationNumber: prescription.identificationNumber,
+                        hn: prescription.hn,
+                        name: prescription.name,
+                        queueNo: prescription.queueNo,
+                        doctor: prescription.doctor,
+                        pillStore: pillStore,
+                        pills: prescription.pills,
+                      });
+
+                      newInvoice.save(async (err, newInvoice) => {
+                        if (err) {
+                          return res.status(500).send({ message: err });
+                        }
+
+                        await delete newInvoice._doc.paidStatus;
+                        await delete newInvoice._doc.createdAt;
+                        await delete newInvoice._doc.updatedAt;
+
+                        return res.status(200).send(newInvoice);
+                      });
+                    });
                   });
-                });
               });
           }
         );
