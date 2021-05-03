@@ -99,6 +99,7 @@ exports.getAvailablePillStores = (req, res) => {
             return res
               .status(500)
               .send({ message: "Cannot get available pill store!!" });
+
           storehouses.shift();
           for (store of storehouses) {
             let available = true;
@@ -116,9 +117,12 @@ exports.getAvailablePillStores = (req, res) => {
             const getPillStore = pillStores.find(
               ({ pillStorehouse_id }) => pillStorehouse_id == store._id
             );
-            if (available && getPillStore && getPillStore._doc.openingStatus) {
+
+            console.log(getPillStore)
+
+            if (available && getPillStore._doc.activated && getPillStore._doc.openingStatus) {
               availablePillStores.push({
-                ...getPillStore._doc,
+                ...getPillStore,
                 status: true,
               });
             } else {
