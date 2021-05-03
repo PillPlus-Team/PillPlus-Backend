@@ -1,3 +1,4 @@
+const { get } = require("mongoose");
 const { pill } = require("../models");
 const db = require("../models");
 const ID = db.id;
@@ -127,16 +128,18 @@ exports.getAvailablePillStores = (req, res) => {
               ({ pillStorehouse_id }) => pillStorehouse_id == store._id
             )._doc;
 
-            if (available && getPillStore.activated && getPillStore.openingStatus) {
-              availablePillStores.push({
-                ...getPillStore,
-                status: true,
-              });
-            } else {
-              availablePillStores.push({
-                ...getPillStore._doc,
-                status: false,
-              });
+            if (getPillStore) {
+              if (available && getPillStore.activated && getPillStore.openingStatus) {
+                availablePillStores.push({
+                  ...getPillStore,
+                  status: true,
+                });
+              } else {
+                availablePillStores.push({
+                  ...getPillStore,
+                  status: false,
+                });
+              }
             }
           }
         
