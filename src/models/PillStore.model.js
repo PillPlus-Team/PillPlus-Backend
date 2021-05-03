@@ -37,10 +37,15 @@ const PillStoreSchema = new Schema(
       lowercase: true,
       validate: [/^[\w]+[\.\w-]*?@[\w]+(\.[\w]+)+$/, "invalid email"],
     },
+    avatarUri: {
+      type: String,
+      default: "https://api.pillplus.store/api/v1/picture/avatar.jpg",
+      required: true,
+    },
     openingStatus: { type: Boolean, default: false, select: false },
     pillStorehouse_id: { type: String, select: false },
     password: { type: String, required: true, select: false },
-    activated: { type: Boolean, default: false, select: false },
+    activated: { type: Boolean, default: false },
   },
   {
     timestamps: false,

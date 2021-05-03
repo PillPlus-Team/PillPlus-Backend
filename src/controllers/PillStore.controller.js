@@ -69,46 +69,11 @@ exports.addPillStore = async (req, res) => {
   });
 };
 
-// Check duplicate Email and Phone
-exports.checkDuplicateEmailOrPhone = (req, res, next) => {
-  // Username
-  PillStore.findOne({
-    email: req.body.email,
-  }).exec((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-
-    if (user) {
-      res.status(400).send({ message: "Failed! Email is already in use!" });
-      return;
-    }
-
-    // Email
-    PillStore.findOne({
-      phone: req.body.phone,
-    }).exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-
-      if (user) {
-        res.status(400).send({ message: "Failed! Phone is already in use!" });
-        return;
-      }
-
-      next();
-    });
-  });
-};
-
 // Get all pill stores
 exports.getAllPillStores = (req, res) => {
   PillStore.find(
     {},
-    "-coordinate -openingData +activated",
+    "-coordinate -openingData -avatarUri",
     async (err, pillStore) => {
       if (err) {
         return res.status(500).send({ message: "Cannot get all accounts!!" });
