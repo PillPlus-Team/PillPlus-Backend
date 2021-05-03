@@ -36,7 +36,7 @@ exports.createQueue = (req, res, next) => {
 // Get all invoice
 exports.getAllInvoices = (req, res) => {
   Invoice.find({ paidStatus: false }, "-createdAt -updatedAt")
-    .populate("pillStore", "-_id")
+    .populate("pillStore", "-_id -activated -createdAt -updatedAt -avatarUri")
     .exec((err, docs) => {
       if (err) {
         return res.status(500).send({ message: err });
