@@ -128,24 +128,7 @@ exports.getAvailablePillStores = (req, res) => {
               });
             }
           }
-
-            const getPillStore = pillStores.find(
-              ({ pillStorehouse_id }) => pillStorehouse_id == store._id
-            )._doc;
-
-            delete getPillStore.pillStorehouse_id;
-            if (available && getPillStore.openingStatus && getPillStore.activated) {
-              availablePillStores.push({
-                ...getPillStore,
-                status: true,
-              });
-            } else {
-              availablePillStores.push({
-                ...getPillStore,
-                status: false,
-              });
-            }
-          }
+        
           return res.status(200).send(availablePillStores);
         });
     });
