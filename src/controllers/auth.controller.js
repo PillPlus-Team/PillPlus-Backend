@@ -47,7 +47,7 @@ exports.login = (model) => {
 
       var token = await createToken(req, res, model);
 
-      // res.cookie("cookieToken", token, { httpOnly: true });
+//       res.cookie("cookieToken", token, { httpOnly: true });
       res.cookie("cookieToken", token, {
         httpOnly: true,
         secure: true,
@@ -106,7 +106,7 @@ exports.patientLogin = (req, res) => {
             }
           );
 
-          // res.cookie("cookieToken", token, { httpOnly: true });
+//           res.cookie("cookieToken", token, { httpOnly: true });
           res.cookie("cookieToken", token, {
             httpOnly: true,
             secure: true,
