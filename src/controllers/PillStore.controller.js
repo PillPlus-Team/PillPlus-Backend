@@ -123,14 +123,11 @@ exports.getAvailablePillStores = (req, res) => {
               }
             }
 
-            console.log(store)
             const getPillStore = pillStores.find(
               ({ pillStorehouse_id }) => pillStorehouse_id == store._id
-            );
+            )._doc;
 
-            console.log(getPillStore)
-
-            if (available && getPillStore._doc.activated && getPillStore._doc.openingStatus) {
+            if (available && getPillStore.activated && getPillStore.openingStatus) {
               availablePillStores.push({
                 ...getPillStore,
                 status: true,
