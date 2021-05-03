@@ -71,7 +71,7 @@ exports.addPillStore = async (req, res) => {
 exports.getAllPillStores = (req, res) => {
   PillStore.find(
     {},
-    "-coordinate -openingData -avatarUri",
+    "-coordinate -openingData -avatarUri -createdAt -updatedAt",
     async (err, pillStore) => {
       if (err) {
         return res.status(500).send({ message: "Cannot get all accounts!!" });
