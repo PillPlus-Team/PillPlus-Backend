@@ -11,7 +11,7 @@ const prescription = require("./prescription");
 const invoice = require("./invoice");
 
 const expressJwt = require("express-jwt");
-const { notFound, verifyToken } = require("../common/middleware");
+const { notFound, verifyToken, invalidToken } = require("../common/middleware");
 const { errorRes } = require("../common/response");
 
 router.get("/ping", (req, res) => res.json("pong"));
@@ -42,7 +42,7 @@ router.use(
         sameSite: "None",
         maxAge: -1,
       });
-      res.status(404).end();
+      invalidToken(req, res);
     }
     next();
   }
