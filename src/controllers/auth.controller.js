@@ -50,6 +50,7 @@ exports.login = (model) => {
       // res.cookie("cookieToken", token, { httpOnly: true });
       res.cookie("cookieToken", token, {
         httpOnly: true,
+        secure: true,
         sameSite: "None",
         maxAge: 12 * 60 * 60 * 1000,
       }); // add secure: true for production
@@ -102,6 +103,7 @@ exports.patientLogin = (req, res) => {
           // res.cookie("cookieToken", token, { httpOnly: true });
           res.cookie("cookieToken", token, {
             httpOnly: true,
+            secure: true,
             sameSite: "None",
             maxAge: 10 * 60 * 1000,
           }); // add secure: true for production
@@ -110,6 +112,9 @@ exports.patientLogin = (req, res) => {
             { _id: inv.pillStore._id },
             "+openingStatus",
             (err, pillStore) => {
+              if (err)
+                return res.status(500).send({ message: err });
+
               inv.pillStore = pillStore;
               return res.status(200).send(inv);
             }
