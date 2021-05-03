@@ -77,4 +77,5 @@ module.exports = {
   forPillStore,
   notOnlyMembers,
   verifyToken,
+  invalidToken,
 };
