@@ -1,7 +1,5 @@
 const db = require('../models');
 const Queue = db.queue;
-const Invoice = db.invoice;
-const PillStore = db.pillStore;
 const Prescription = db.prescriptions;
 
 // Create queue for patient
