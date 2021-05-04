@@ -316,7 +316,7 @@ exports.getAllStatements = (req, res) => {
         for (invoice of invoices) {
           if (!invoiceList[invoice.pillStore.name]) {
             invoiceList[invoice.pillStore.name] = {
-              ...invoice.pillStore,
+              ...invoice.pillStore._doc,
               balanced: invoice.totalPay - invoice.serviceCharge,
             };
           } else {
