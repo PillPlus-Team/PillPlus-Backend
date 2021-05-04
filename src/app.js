@@ -24,7 +24,7 @@ const corsOptions = {
   origin: [
     `${process.env.ORIGIN_CORS}`,
     "https://hospital.pillplus.store",
-    "https://phamarcy.pillplus.store",
+    "https://pharmacy.pillplus.store",
     "https://pillplus.store",
     "https://www.pillplus.store",
   ],
