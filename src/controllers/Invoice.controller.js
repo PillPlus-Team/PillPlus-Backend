@@ -301,7 +301,7 @@ exports.getAllStatements = (req, res) => {
   let invoiceList = [];
   PillStore.find({}).exec((err, pillStores) => {
     invoiceList = pillStores.map((pillStore) => ({
-      ...pillStore,
+      ...pillStore._doc,
       balanced: 0,
     }));
   });
