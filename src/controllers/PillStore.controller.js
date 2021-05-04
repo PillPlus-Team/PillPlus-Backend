@@ -89,13 +89,13 @@ exports.getAvailablePillStores = (req, res) => {
     }
 
     if (!doc) {
-      return res.status(500).send({ message: "Cannot found"});
+      return res.status(500).send({ message: "Cannot found" });
     }
 
     var pills = doc.pills;
     var availablePillStores = [];
     PillStore.find(
-      { ID: { $ne: "PS1000" } },
+      {},
       "-_id -avatarUri +openingStatus +pillStorehouse_id -createdAt -updatedAt"
     ).then(async (pillStores) => {
       PillStorehouse.find({})
@@ -107,6 +107,13 @@ exports.getAvailablePillStores = (req, res) => {
               .status(500)
               .send({ message: "Cannot get available pill store!!" });
 
+          if (req.user.mode === "HOSPITAL")
+            availablePillStores.push({ 
+              ...pillStores[0]._doc,
+              status: true
+            });
+
+          pillStores.shift();
           storehouses.shift();
           for (store of storehouses) {
             let available = true;
@@ -140,7 +147,7 @@ exports.getAvailablePillStores = (req, res) => {
               }
             }
           }
-        
+
           return res.status(200).send(availablePillStores);
         });
     });
@@ -201,12 +208,15 @@ exports.deletePillStore = (req, res) => {
 
       PillStorehouse.deleteOne({
         store: req.params._id,
-      }).then(() => {
-        return res.status(200).send({ message: "Deleted pill store account!" });
       })
-      .catch((err) => {
-        return res.status(500).send({ message: err });
-      });
+        .then(() => {
+          return res
+            .status(200)
+            .send({ message: "Deleted pill store account!" });
+        })
+        .catch((err) => {
+          return res.status(500).send({ message: err });
+        });
     }
   );
 };
