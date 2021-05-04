@@ -84,7 +84,6 @@ exports.getAllPillStores = (req, res) => {
 // Get available pill stores by pills data
 exports.getAvailablePillStores = (req, res) => {
   Prescription.findOne({ _id: req.params._id }, "+pills._id", (err, doc) => {
-    console.log(err, doc)
     if (err) {
       return res.status(500).send({ message: err });
     }
@@ -103,11 +102,10 @@ exports.getAvailablePillStores = (req, res) => {
         .populate("store", "+loginTimestamp")
         .populate("pill_list.pill")
         .exec((err, storehouses) => {
-          console.log(err, storehouses)
           if (err)
             return res
               .status(500)
-              .send({ message: err });
+              .send({ message: "Cannot get available pill store!!" });
 
           if (req.user && req.user.mode === "HOSPITAL")
             availablePillStores.push({ 
