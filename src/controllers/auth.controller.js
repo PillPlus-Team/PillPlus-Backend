@@ -44,7 +44,7 @@ exports.login = (model) => {
     try {
       if (model === PillStore) {
         model
-          .findOneAndUpdate({ _id: req.body._id }, { openingStatus: true })
+          .findOneAndUpdate({ _id: req.body._id }, { loginTimestamp: new Date(), openingStatus: true })
           .catch((err) => {
             return res.status(500).send({ message: err });
           });

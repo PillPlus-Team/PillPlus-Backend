@@ -99,7 +99,7 @@ exports.getAvailablePillStores = (req, res) => {
       "-_id -avatarUri +openingStatus +pillStorehouse_id -createdAt -updatedAt"
     ).then(async (pillStores) => {
       PillStorehouse.find({})
-        .populate("store")
+        .populate("store", "+loginTimestamp")
         .populate("pill_list.pill")
         .exec((err, storehouses) => {
           if (err)
@@ -113,6 +113,8 @@ exports.getAvailablePillStores = (req, res) => {
               status: true
             });
 
+          const today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
           pillStores.shift();
           storehouses.shift();
           for (store of storehouses) {
@@ -122,7 +124,7 @@ exports.getAvailablePillStores = (req, res) => {
                 (pill_store) =>
                   String(pill_store.pill._id) === String(pill._id) &&
                   pill_store.amount >= pill.amount
-              );
+              ) && store.store.loginTimestamp > today;
               if (!store_available) {
                 available = false;
                 break;
