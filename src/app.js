@@ -27,6 +27,7 @@ const corsOptions = {
     "https://pharmacy.pillplus.store",
     "https://pillplus.store",
     "https://www.pillplus.store",
+    "https://map.pillplus.store",
   ],
   credentials: true,
 };
