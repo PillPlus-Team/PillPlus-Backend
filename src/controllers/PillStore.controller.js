@@ -107,7 +107,7 @@ exports.getAvailablePillStores = (req, res) => {
               .status(500)
               .send({ message: "Cannot get available pill store!!" });
 
-          if (req.user.mode === "HOSPITAL")
+          if (req.user && req.user.mode === "HOSPITAL")
             availablePillStores.push({ 
               ...pillStores[0]._doc,
               status: true

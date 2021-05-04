@@ -35,7 +35,7 @@ const invoiceSchema = new Schema(
     serviceCharge: { type: Number, required: true },
     totalPay: { type: Number, required: true },
     paidStatus: { type: Boolean, default: false, required: true, select: false },
-    dispenseDate: { type: Date, select: false }
+    dispenseDate: { type: Date }
   },
   {
     timestamps: true,
