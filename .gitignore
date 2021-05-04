@@ -73,3 +73,4 @@ typings/
 .serverless
 
 /db
+/src/models/Patient.model.js
