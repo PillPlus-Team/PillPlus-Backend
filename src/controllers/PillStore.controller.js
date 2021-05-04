@@ -120,7 +120,7 @@ exports.getAvailablePillStores = (req, res) => {
             for (let pill of pills) {
               const store_available = store.pill_list.find(
                 (pill_store) =>
-                  toString(pill_store._id) === toString(pill._id) &&
+                  String(pill_store.pill._id) === String(pill._id) &&
                   pill_store.amount >= pill.amount
               );
               if (!store_available) {
