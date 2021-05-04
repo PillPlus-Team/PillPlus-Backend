@@ -84,6 +84,7 @@ exports.getAllPillStores = (req, res) => {
 // Get available pill stores by pills data
 exports.getAvailablePillStores = (req, res) => {
   Prescription.findOne({ _id: req.params._id }, "+pills._id", (err, doc) => {
+    console.log(err, doc)
     if (err) {
       return res.status(500).send({ message: err });
     }
