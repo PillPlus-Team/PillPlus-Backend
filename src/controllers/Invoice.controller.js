@@ -317,7 +317,7 @@ exports.getAllStatements = (req, res) => {
           const found = invoiceList.findIndex(
             (pillStore) => pillStore._id == invoice.pillStore._doc._id
           );
-          console.log(invoice.pillStore._doc._id);
+          console.log(invoice);
 
           if (found === -1) {
             invoiceList.push({
