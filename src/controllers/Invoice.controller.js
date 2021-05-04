@@ -106,17 +106,17 @@ exports.selectPillStore = (req, res) => {
                 var totalPrice = 0;
                 if (pillIndex !== -1) {
                   storehouse.pill_list[pillIndex].amount -= doc.amount;
-                  totalPrice = storehouse.pill_list[pillIndex].pill.price * doc.amount;
+                  totalPrice =
+                    storehouse.pill_list[pillIndex].pill.price * doc.amount;
                   totalPay += totalPrice;
                 } else {
                   return res.status(500).send({ message: "pill not found!" });
                 }
-  
+
                 pillCost.push({
                   ...doc._doc,
-                  totalPrice
+                  totalPrice,
                 });
-
               });
 
               Prescription.findOneAndUpdate(
@@ -306,13 +306,26 @@ exports.getAllStatements = (req, res) => {
     },
   })
     .populate("pillStore")
-    .exec((err, invoice) => {
+    .exec((err, invoices) => {
       if (err)
         return res
           .status(500)
           .send({ message: "can't get Invoice by this ID!" });
 
-      return res.status(200).send(invoice);
+      if (invoices) {
+        for (invoice of invoices) {
+          if (!invoiceList[invoice.pillStore.name]) {
+            invoiceList[invoice.pillStore.name] = {
+              ...invoice.pillStore,
+              balanced: invoice.serviceCharge + invoice.totalPay,
+            };
+          } else {
+            invoiceList[invoice.pillStore.name].balanced +=
+              invoice.serviceCharge + invoice.totalPay;
+          }
+        }
+      }
+      return res.status(200).send(invoiceList);
     });
 };
 
