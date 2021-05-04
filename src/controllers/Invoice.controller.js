@@ -298,7 +298,7 @@ exports.dispensePill = (req, res) => {
 
 // Statements
 exports.getAllStatements = (req, res) => {
-  let invoiceList = {};
+  let invoiceList = [];
   Invoice.find({
     dispenseDate: {
       $gte: new Date(req.body.year, req.body.month, 1),
@@ -314,13 +314,17 @@ exports.getAllStatements = (req, res) => {
 
       if (invoices) {
         for (invoice of invoices) {
-          if (!invoiceList[invoice.pillStore.name]) {
-            invoiceList[invoice.pillStore.name] = {
+          const found = invoiceList.findIndex(
+            (pillStore) => pillStore._id == invoice.pillStore._doc._id
+          );
+
+          if (found === -1) {
+            invoiceList.push({
               ...invoice.pillStore._doc,
               balanced: invoice.totalPay - invoice.serviceCharge,
-            };
+            });
           } else {
-            invoiceList[invoice.pillStore.name].balanced +=
+            invoiceList[found].balanced +=
               invoice.totalPay - invoice.serviceCharge;
           }
         }
