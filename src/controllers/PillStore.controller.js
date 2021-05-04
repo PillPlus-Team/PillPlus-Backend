@@ -102,7 +102,7 @@ exports.getAvailablePillStores = (req, res) => {
         .populate("store", "+loginTimestamp")
         .populate("pill_list.pill")
         .exec((err, storehouses) => {
-          console.log(err)
+          console.log(err, storehouses)
           if (err)
             return res
               .status(500)
