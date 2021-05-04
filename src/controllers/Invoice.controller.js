@@ -300,7 +300,10 @@ exports.dispensePill = (req, res) => {
 exports.getAllStatements = (req, res) => {
   let invoiceList = [];
   PillStore.find({}).exec((err, pillStores) => {
-    invoiceList = pillStores.map((pillStore) => (pillStore.balanced = 0));
+    invoiceList = pillStores.map((pillStore) => ({
+      ...pillStore,
+      balanced: 0,
+    }));
   });
   Invoice.find({
     dispenseDate: {
