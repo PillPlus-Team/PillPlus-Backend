@@ -317,10 +317,11 @@ exports.getAllStatements = (req, res) => {
           if (!invoiceList[invoice.pillStore.name]) {
             invoiceList[invoice.pillStore.name] = {
               ...invoice.pillStore,
-              balanced: invoice.totalPay,
+              balanced: invoice.totalPay - invoice.serviceCharge,
             };
           } else {
-            invoiceList[invoice.pillStore.name].balanced += invoice.totalPay;
+            invoiceList[invoice.pillStore.name].balanced +=
+              invoice.totalPay - invoice.serviceCharge;
           }
         }
       }
