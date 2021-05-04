@@ -311,8 +311,9 @@ exports.getAllStatements = (req, res) => {
         return res
           .status(500)
           .send({ message: "can't get Invoice by this ID!" });
-
+      
       if (invoices) {
+        console.log(invoices);
         for (invoice of invoices) {
           const found = invoiceList.findIndex(
             (pillStore) => pillStore._id == invoice.pillStore._doc._id
