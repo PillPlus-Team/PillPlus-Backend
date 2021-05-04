@@ -308,8 +308,8 @@ exports.getAllStatements = (req, res) => {
   });
   Invoice.find({
     dispenseDate: {
-      $gte: new Date(req.body.year, req.body.month, 1),
-      $lt: new Date(req.body.year, req.body.month + 1, 1),
+      $gte: new Date(req.query.year, req.query.month, 1),
+      $lt: new Date(req.query.year, req.query.month + 1, 1),
     },
   })
     .populate("pillStore")
@@ -344,8 +344,8 @@ exports.getStatements = (req, res) => {
   Invoice.find({
     pillStore: req.user._id,
     dispenseDate: {
-      $gte: new Date(req.body.year, req.body.month, 1),
-      $lt: new Date(req.body.year, req.body.month + 1, 1),
+      $gte: new Date(req.query.year, req.query.month, 1),
+      $lt: new Date(req.query.year, req.query.month + 1, 1),
     },
   })
     .populate("pillStore")
