@@ -7,6 +7,7 @@ const io = require("socket.io")(process.env.SOCKET_PORT, {
       `${process.env.ORIGIN_CORS}`,
       "https://admin.pillplus.store",
       "https://hospital.pillplus.store",
+      "https://pharmacy.pillplus.store",
     ],
     methods: ["GET", "POST"],
   },
