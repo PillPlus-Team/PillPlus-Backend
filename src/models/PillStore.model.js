@@ -18,12 +18,12 @@ const PillStoreSchema = new Schema(
         openHour: { type: String },
         openMinute: { type: String },
         closeHour: { type: String },
-        closeMinute: { type: String }
-      }
+        closeMinute: { type: String },
+      },
     ],
     coordinate: {
       lat: { type: Number },
-      lng: { type: Number }
+      lng: { type: Number },
     },
     phone: {
       type: String,
@@ -46,6 +46,7 @@ const PillStoreSchema = new Schema(
     pillStorehouse_id: { type: String, select: false },
     password: { type: String, required: true, select: false },
     activated: { type: Boolean, default: false },
+    loginTimestamp: { type: Date, default: Date.now, select: false },
   },
   {
     timestamps: true,
