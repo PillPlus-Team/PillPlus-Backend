@@ -315,13 +315,13 @@ exports.getAllStatements = (req, res) => {
       if (invoices) {
         for (invoice of invoices) {
           const found = invoiceList.findIndex(
-            (pillStore) => pillStore._id == invoices.pillStore._doc._id
+            (pillStore) => pillStore._id == invoice.pillStore._doc._id
           );
 
           if (found === -1) {
             invoiceList.push({
               ...invoice.pillStore._doc,
-              balanced: invoices.totalPay - invoice.serviceCharge,
+              balanced: invoice.totalPay - invoice.serviceCharge,
             });
           } else {
             invoiceList[found].balanced +=
