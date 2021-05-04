@@ -300,7 +300,7 @@ exports.dispensePill = (req, res) => {
 exports.getAllStatements = (req, res) => {
   let invoiceList = [];
   PillStore.find({}).exec((err, pillStores) => {
-    invoiceList = pillStores;
+    invoiceList = pillStores.map((pillStore) => (pillStore.balanced = 0));
   });
   Invoice.find({
     dispenseDate: {
@@ -321,8 +321,6 @@ exports.getAllStatements = (req, res) => {
             (pillStore) =>
               String(pillStore._id) === String(invoice.pillStore._doc._id)
           );
-          console.log(invoice.pillStore._id);
-
           if (found === -1) {
             invoiceList.push({
               ...invoice.pillStore._doc,
