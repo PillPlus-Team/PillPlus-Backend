@@ -4,7 +4,8 @@ const router = express.Router();
 const db = require("../models");
 
 const { 
-  onlyAdmin
+  onlyAdmin,
+  verifyToken
 } = require("../common/middleware");
 
 const {
@@ -16,8 +17,10 @@ const controller = require('../controllers/PillStore.controller');
 
 // ---------------------------- API ---------------------------- //
 
-router.get("/all", controller.getAllPillStores); // fetch All data
 router.get("/available/:_id", controller.getAvailablePillStores);
+
+router.use(verifyToken);
+router.get("/all", controller.getAllPillStores); // fetch All data
 
 router.use(onlyAdmin);
 

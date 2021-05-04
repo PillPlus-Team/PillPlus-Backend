@@ -50,13 +50,13 @@ router.use(
 
 router.use("/auth", auth);
 router.use("/prescription", prescription);
+router.use("/pillStore", pillStore);
 
 router.use(verifyToken);
 router.use("/pill", pill);
 router.use("/account", account);
 router.use("/picture", picture);
 router.use("/invoice", invoice);
-router.use("/pillStore", pillStore);
 router.use("/pillStorehouse", pillStorehouse);
 router.use(notFound);
 
