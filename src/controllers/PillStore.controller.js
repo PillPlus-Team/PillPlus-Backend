@@ -102,10 +102,11 @@ exports.getAvailablePillStores = (req, res) => {
         .populate("store", "+loginTimestamp")
         .populate("pill_list.pill")
         .exec((err, storehouses) => {
+          console.log(err)
           if (err)
             return res
               .status(500)
-              .send({ message: "Cannot get available pill store!!" });
+              .send({ message: err });
 
           if (req.user && req.user.mode === "HOSPITAL")
             availablePillStores.push({ 
