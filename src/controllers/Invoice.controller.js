@@ -299,6 +299,9 @@ exports.dispensePill = (req, res) => {
 // Statements
 exports.getAllStatements = (req, res) => {
   let invoiceList = [];
+  PillStore.find({}).exec((err, pillStores) => {
+    invoiceList = pillStores;
+  });
   Invoice.find({
     dispenseDate: {
       $gte: new Date(req.body.year, req.body.month, 1),
