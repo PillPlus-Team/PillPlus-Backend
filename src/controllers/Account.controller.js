@@ -40,10 +40,6 @@ exports.updateAccount = (req, res) => {
       return res.status(500).send({ message: err });
     }
 
-    if (req.user.role === user.role) {
-      return res.status(500).send({ message: "Cannot edit admin users either!" });
-    }
-
     if (!user || user._id == req.params._id) {
       User.findOne({
         phone: req.body.phone,
@@ -61,6 +57,10 @@ exports.updateAccount = (req, res) => {
             { new: true },
             async (err, user) => {
               if (err) return res.status(500).send({ message: err });
+
+              if (req.user.role === user.role) {
+                return res.status(500).send({ message: "Cannot edit admin users either!" });
+              }
 
               await delete user._doc.avatarUri;
               res.status(200).send(user);
