@@ -15,7 +15,12 @@ exports.findByEmail = (model) => {
       { lean: true },
       (err, data) => {
         if (err || !data)
-          return errorRes(res, "invalid login", "invalid password or email");
+          return errorRes(
+            res,
+            "invalid login",
+            "invalid password or email",
+            403
+          );
         req.body = { unhashedPassword: password, ...data };
         return next();
       }
@@ -29,7 +34,7 @@ exports.verifyPassword = (req, res, next) => {
     if (same) {
       req.body = userData;
       return next();
-    } else return errorRes(res, err, "password error, try again");
+    } else return errorRes(res, err, "password error, try again", 403);
   });
 };
 
@@ -216,7 +221,7 @@ exports.resetPassword = (req, res) => {
       }
 
       if (!same) {
-        return errorRes(res, err, "password error, try again");
+        return errorRes(res, err, "password error, try again", 403);
       }
 
       if (newPassword !== reNewPassword) {
