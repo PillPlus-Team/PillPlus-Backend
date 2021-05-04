@@ -348,7 +348,7 @@ exports.getStatements = (req, res) => {
       $gte: new Date(Number(req.query.year), Number(req.query.month), 1),
       $lt: new Date(Number(req.query.year), Number(req.query.month) + 1, 1),
     },
-  })
+  }, "+dispenseDate")
     .populate("pillStore")
     .exec((err, invoice) => {
       if (err)
