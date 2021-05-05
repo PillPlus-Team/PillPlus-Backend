@@ -94,7 +94,7 @@ exports.patientLogin = (req, res) => {
           return res.status(500).send({ message: err });
         }
 
-        if (!inv || inv.dispenseDate) {
+        if (!inv || inv.dispenseDate || inv.pillStore.ID === "PS1000") {
           return res
             .status(500)
             .send({ message: "Cannot find this invoice!!!" });
