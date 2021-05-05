@@ -82,14 +82,10 @@ exports.deletePill = (req, res) => {
                 return res.status(500).send({ message: err});
 
             storehouse.forEach(account => {
-                const pill_list = account.pill_list;
-                
-                for ( let i = 0; i < pill_list.length; i++ ) {
-                    if (pill_list[i]._id == req.params._id) {
-                        pill_list.splice(i, 1);
-                        break;
-                    }
-                }
+                var pill_list = account.pill_list;
+
+                pill_list = pill_list.filter(({ pill }) => req.params._id != pill._id);
+
                 PillStorehouse.findOneAndUpdate(
                     { _id: account._id },
                     { pill_list: pill_list }
