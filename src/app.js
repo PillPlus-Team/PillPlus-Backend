@@ -28,6 +28,7 @@ const corsOptions = {
     "https://pillplus.store",
     "https://www.pillplus.store",
     "https://map.pillplus.store",
+    "http://localhost:9999"
   ],
   credentials: true,
 };

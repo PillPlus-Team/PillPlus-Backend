@@ -8,6 +8,7 @@ const io = require("socket.io")(process.env.SOCKET_PORT, {
       "https://admin.pillplus.store",
       "https://hospital.pillplus.store",
       "https://pharmacy.pillplus.store",
+      "http://localhost:9999"
     ],
     methods: ["GET", "POST"],
   },
