@@ -95,7 +95,7 @@ exports.selectPillStore = (req, res) => {
                   .send({ message: "Cannot select this pill store!!" });
 
               var pillCost = [];
-              const serviceCharge = 50;
+              const serviceCharge = pillStore.ID === "PS1000" ? 0 : 80;
               var totalPay = serviceCharge;
 
               prescription.pills.forEach((doc) => {
